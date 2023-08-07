@@ -1,0 +1,20 @@
+{
+  "name": "hamster",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "ecr-login": "aws --profile hamster-cdk ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 740983408400.dkr.ecr.us-east-1.amazonaws.com",
+    "docker-build": "docker build -t hamster:latest .",
+    "docker-tag": "docker tag hamster:latest 740983408400.dkr.ecr.us-east-1.amazonaws.com/hamster-discord-repository:latest",
+    "docker-push": "docker push 740983408400.dkr.ecr.us-east-1.amazonaws.com/hamster-discord-repository:latest",
+    "docker-publish": "npm run build && npm run docker-build && npm run docker-tag && npm run docker-push"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "discord.js": "^14.12.1",
+    "dotenv": "^16.3.1"
+  }
+}
