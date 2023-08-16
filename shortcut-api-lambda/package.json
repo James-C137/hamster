@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "aws-lambda": "^1.0.7",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^20.4.8",
+    "typescript": "^5.1.6"
+  }
+}

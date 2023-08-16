@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { App, Environment } from 'aws-cdk-lib';
-import { APIStack } from '../lib/api-stack';
-import { DiscordStack } from '../lib/discord-stack';
-import { EntryStack } from '../lib/entry-stack';
+import { DiscordFrontendStack } from '../lib/discord-frontent-stack';
+import { EntryManagementStack } from '../lib/entries-management-stack';
+import { ShortcutFrontendStack } from '../lib/shortcut-frontend-stack';
 
 const defaultEnv: Environment = {
   account: process.env.ACCOUNT,
@@ -11,15 +11,14 @@ const defaultEnv: Environment = {
 
 const app = new App();
 
-const discordStack = new DiscordStack(app, 'HamsterDiscordStack', {
+const entryManagementStack = new EntryManagementStack(app, 'HamsterEntryManagementStack', {
   env: defaultEnv,
 });
 
-const entryStack = new EntryStack(app, 'HamsterEntryStack', {
+const discordFrontendStack = new DiscordFrontendStack(app, 'HamsterDiscordFrontendStack', {
   env: defaultEnv,
 });
 
-const apiStack = new APIStack(app, 'HamsterAPIStack', {
+const shortcutFrontendStack = new ShortcutFrontendStack(app, 'HamsterShorcutFrontendStack', {
   env: defaultEnv,
-  entriesAPILambda: entryStack.entriesAPILambda,
 });

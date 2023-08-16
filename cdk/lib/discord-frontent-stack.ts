@@ -5,19 +5,19 @@ import { Cluster, Compatibility, ContainerImage, CpuArchitecture, FargateService
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
-interface DiscordStackProps extends StackProps {
+interface DiscordFrontendStackProps extends StackProps {
   env: Environment;
 }
 
-export class DiscordStack extends Stack {
+export class DiscordFrontendStack extends Stack {
 
-  private readonly props: DiscordStackProps;
+  private readonly props: DiscordFrontendStackProps;
   public readonly discordVPC: Vpc;
   public readonly discordCluster: Cluster;
   public readonly discordTaskDefinition: TaskDefinition;
   public readonly discordService: FargateService;
 
-  constructor(scope: Construct, id: string, props: DiscordStackProps) {
+  constructor(scope: Construct, id: string, props: DiscordFrontendStackProps) {
     super(scope, id, props);
     this.props = props;
 
