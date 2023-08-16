@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "ecr-login": "aws --profile hamster-cdk ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 740983408400.dkr.ecr.us-east-1.amazonaws.com",
     "docker-build": "docker build -t hamster:latest .",
@@ -15,7 +16,8 @@
   "dependencies": {
     "axios": "^1.4.0",
     "discord.js": "^14.12.1",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
