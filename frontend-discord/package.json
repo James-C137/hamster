@@ -9,11 +9,12 @@
     "docker-build": "docker build -t hamster:latest .",
     "docker-tag": "docker tag hamster:latest 740983408400.dkr.ecr.us-east-1.amazonaws.com/hamster-discord-repository:latest",
     "docker-push": "docker push 740983408400.dkr.ecr.us-east-1.amazonaws.com/hamster-discord-repository:latest",
-    "docker-publish": "npm run build && npm run docker-build && npm run docker-tag && npm run docker-push"
+    "docker-publish": "npm run docker-build && npm run docker-tag && npm run docker-push"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-ssm": "^3.391.0",
     "axios": "^1.4.0",
     "discord.js": "^14.12.1",
     "dotenv": "^16.3.1",

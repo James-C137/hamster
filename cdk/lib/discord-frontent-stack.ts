@@ -2,6 +2,7 @@ import { Environment, Stack, StackProps } from 'aws-cdk-lib';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Cluster, Compatibility, ContainerImage, CpuArchitecture, FargateService, LogDrivers, OperatingSystemFamily, TaskDefinition } from 'aws-cdk-lib/aws-ecs';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
@@ -50,6 +51,16 @@ export class DiscordFrontendStack extends Stack {
       },
     });
 
+    taskDefinition.addToTaskRolePolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: [
+        'ssm:GetParameter',
+      ],
+      resources: [
+        '*'
+      ],
+    }))
+
     const repo = Repository.fromRepositoryArn(
       this,
       'hamster-discord-repository',
@@ -61,7 +72,10 @@ export class DiscordFrontendStack extends Stack {
       logging: LogDrivers.awsLogs({
         streamPrefix: 'ecs',
         logRetention: RetentionDays.FIVE_DAYS,
-      })
+      }),
+      environment: {
+        'REGION': this.props.env.region ?? '',
+      },
     });
 
     return taskDefinition;
