@@ -9,7 +9,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 })
 
-const entriesAPIBaseURL = await getEntriesAPIBaseURL();
+const entriesAPIBaseURL = await getEntriesAPIBaseURL()
 
 client.once(Events.ClientReady, (c) => {
   console.log(`Logged in as ${c.user.tag}`)
@@ -35,20 +35,20 @@ client.on('messageCreate', async (message: Message) => {
 // login bot
 await client.login(process.env.CLIENT_TOKEN)
 
-async function getEntriesAPIBaseURL(): Promise<string> {
-  const client = new SSMClient({ region: 'us-east-1' });
+async function getEntriesAPIBaseURL (): Promise<string> {
+  const client = new SSMClient({ region: 'us-east-1' })
   const command = new GetParameterCommand({
-    Name: 'HamsterEntriesBaseURL',
-  });
+    Name: 'HamsterEntriesBaseURL'
+  })
 
-  const output = await client.send(command);
-  const url = output.Parameter?.Value;
+  const output = await client.send(command)
+  const url = output.Parameter?.Value
 
   if (url === undefined) {
-    throw new Error('Failed to fetch Entries API base URL');
+    throw new Error('Failed to fetch Entries API base URL')
   }
 
-  return url;
+  return url
 }
 
 function parseMessage (username: string, text: string): ParsedMessageType {

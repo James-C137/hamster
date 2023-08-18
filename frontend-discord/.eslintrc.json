@@ -7,7 +7,7 @@
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module",
-        "project": ["./tsconfig.json"]
+        "project": ["./frontend-discord/tsconfig.json"]
     },
     "rules": {
     }
