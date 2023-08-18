@@ -1,12 +1,12 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
 
-export async function ping(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+export async function ping (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   return {
     statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'text/plain',
+      'Content-Type': 'text/plain'
     },
-    body: 'Pong',
+    body: 'Pong'
   }
 }

@@ -1,0 +1,7 @@
+{
+    "eslint.workingDirectories": [
+      "entries-api-lambda",
+      "frontend-discord",
+      "shortcut-api-lambda"
+    ]
+  }

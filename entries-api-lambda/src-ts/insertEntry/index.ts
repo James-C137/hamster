@@ -1,60 +1,58 @@
-import { AttributeValue, DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { z } from 'zod';
+import { type AttributeValue, DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
+import { z } from 'zod'
 
 const insertEntryBodySchema = z.object({
   timestamp: z.coerce.date(),
   username: z.string(),
   analysisName: z.string().optional(),
   eventName: z.string().optional(),
-  data: z.string().optional(),
-});
+  data: z.string().optional()
+})
 
-type InsertEntryBody = z.infer<typeof insertEntryBodySchema>;
+type InsertEntryBody = z.infer<typeof insertEntryBodySchema>
 
-export async function insertEntry(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
-  let body: InsertEntryBody;
+export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+  let body: InsertEntryBody
   try {
-    body = insertEntryBodySchema.parse(JSON.parse(event.body ?? ''));
-  }
-  catch (e) {
-    let message: string = 'Bad Request';
+    body = insertEntryBodySchema.parse(JSON.parse(event.body ?? ''))
+  } catch (e) {
+    let message: string = 'Bad Request'
     if (e instanceof Error) {
-      message = e.message;
-    }
-    else if (typeof e === 'string') {
-      message = e;
+      message = e.message
+    } else if (typeof e === 'string') {
+      message = e
     }
     return {
       statusCode: 400,
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'text/plain',
+        'Content-Type': 'text/plain'
       },
-      body: message,
+      body: message
     }
   }
 
-  await putItemCommand(body);
+  await putItemCommand(body)
 
   return {
     statusCode: 200,
-    body: 'OK',
+    body: 'OK'
   }
 }
 
-async function putItemCommand(item: InsertEntryBody): Promise<void> {
-  const client = new DynamoDBClient({ region: process.env.REGION });
+async function putItemCommand (item: InsertEntryBody): Promise<void> {
+  const client = new DynamoDBClient({ region: process.env.REGION })
   const dynamoDBItem: Record<string, AttributeValue> = {
     username: { S: item.username },
-    timestamp: { S: item.timestamp.toJSON() },
+    timestamp: { S: item.timestamp.toJSON() }
   }
-  if (item.analysisName) dynamoDBItem.analysisName = { S: item.analysisName };
-  if (item.eventName) dynamoDBItem.eventName = { S: item.eventName };
-  if (item.data) dynamoDBItem.data = { S: item.data };
+  if (item.analysisName) dynamoDBItem.analysisName = { S: item.analysisName }
+  if (item.eventName) dynamoDBItem.eventName = { S: item.eventName }
+  if (item.data) dynamoDBItem.data = { S: item.data }
   const command = new PutItemCommand({
     TableName: process.env.ENTRIES_TABLE_NAME,
-    Item: dynamoDBItem,
-  });
-  await client.send(command);
+    Item: dynamoDBItem
+  })
+  await client.send(command)
 }
