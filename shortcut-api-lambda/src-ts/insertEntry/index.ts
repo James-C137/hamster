@@ -1,4 +1,6 @@
+import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm'
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
+import axios from 'axios'
 import { z } from 'zod'
 import { sendDiscordMessage } from './sendDiscordMessage'
 
@@ -14,6 +16,7 @@ export type InsertEntryBody = z.infer<typeof insertEntryBodySchema>
 export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   let body: InsertEntryBody
 
+  // Parse input from request
   try {
     body = insertEntryBodySchema.parse(JSON.parse(event.body ?? ''))
     await sendDiscordMessage(body)
@@ -34,8 +37,32 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
     }
   }
 
+  // Pass through message to Entries API
+  const entriesURL = await getEntriesURL()
+  await axios.post(`${entriesURL}users/${body.username}/entries`, {
+    timestamp: Date.now(),
+    username: body.username,
+    analysisName: body.analysisName,
+    eventName: body.eventName,
+    data: body.data
+  })
+
   return {
     statusCode: 200,
     body: 'OK'
   }
+}
+
+async function getEntriesURL(): Promise<string> {
+  const client = new SSMClient({ region: 'us-east-1' })
+  const command = new GetParameterCommand({
+    Name: 'HamsterEntriesBaseURL',
+  })
+
+  const output = await client.send(command)
+  if (output.Parameter?.Value === undefined) {
+    throw new Error('Failed to fetch Entries API Base URL')
+  }
+
+  return output.Parameter.Value
 }
