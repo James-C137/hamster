@@ -32,8 +32,9 @@ export class ShortcutFrontendStack extends Stack {
       runtime: Runtime.NODEJS_16_X,
       entry: '../shortcut-api-lambda/src-ts/handler.ts',
       timeout: Duration.seconds(15),
+      memorySize: 256,
       environment: {
-        'DISCORD_CLIENT_TOKEN': process.env.DISCORD_CLIENT_TOKEN ?? ''
+        DISCORD_CLIENT_TOKEN: process.env.DISCORD_CLIENT_TOKEN ?? ''
       }
     })
 

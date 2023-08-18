@@ -2,7 +2,6 @@ import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm'
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
 import axios from 'axios'
 import { z } from 'zod'
-import { sendDiscordMessage } from './sendDiscordMessage'
 
 const insertEntryBodySchema = z.object({
   username: z.string(),
@@ -38,16 +37,13 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
 
   // Pass through message to Entries API
   const entriesURL = await getEntriesURL()
-  const logToDatabasePromise = axios.post(`${entriesURL}users/${body.username}/entries`, {
+  await axios.post(`${entriesURL}users/${body.username}/entries`, {
     timestamp: Date.now(),
     username: body.username,
     analysisName: body.analysisName,
     eventName: body.eventName,
     data: body.data
   })
-  const sendDiscordMessagePromise = sendDiscordMessage(body)
-
-  await Promise.all([logToDatabasePromise, sendDiscordMessagePromise])
 
   return {
     statusCode: 200,

@@ -1,6 +1,6 @@
-import { type Environment, Stack, type StackProps } from 'aws-cdk-lib'
+import { Stack, type Environment, type StackProps } from 'aws-cdk-lib'
 import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway'
-import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb'
+import { Table, type ITable } from 'aws-cdk-lib/aws-dynamodb'
 import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { StringParameter } from 'aws-cdk-lib/aws-ssm'
@@ -12,7 +12,7 @@ interface EntryManagementStackProps extends StackProps {
 
 export class EntryManagementStack extends Stack {
   private readonly props: EntryManagementStackProps
-  public readonly entriesTable: Table
+  public readonly entriesTable: ITable
   public readonly entriesAPILambda: NodejsFunction
   public readonly apiGatway: RestApi
 
@@ -25,23 +25,15 @@ export class EntryManagementStack extends Stack {
     this.apiGatway = this.createAPIGateway(this.entriesAPILambda)
   }
 
-  private createEntriesTable (): Table {
-    const table = new Table(this, 'hamster-entries-table', {
-      billingMode: BillingMode.PAY_PER_REQUEST,
-      partitionKey: {
-        name: 'username',
-        type: AttributeType.STRING
-      },
-      sortKey: {
-        name: 'timestamp',
-        type: AttributeType.STRING
-      }
-    })
-
+  private createEntriesTable (): ITable {
+    const table = Table.fromTableArn(
+      this,
+      'hamster-entries-table',
+      'arn:aws:dynamodb:us-east-1:740983408400:table/HamsterEntriesTable')
     return table
   }
 
-  private createEntriesAPILambda (entriesTable: Table): NodejsFunction {
+  private createEntriesAPILambda (entriesTable: ITable): NodejsFunction {
     const lambda = new NodejsFunction(this, 'hamster-entries-api-lambda', {
       functionName: 'HamsterEntriesAPILambda',
       runtime: Runtime.NODEJS_16_X,

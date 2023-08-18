@@ -1,4 +1,4 @@
-import { type AttributeValue, DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, PutItemCommand, type AttributeValue } from '@aws-sdk/client-dynamodb'
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
 import { z } from 'zod'
 
@@ -47,9 +47,9 @@ async function putItemCommand (item: InsertEntryBody): Promise<void> {
     username: { S: item.username },
     timestamp: { S: item.timestamp.toJSON() }
   }
-  if (item.analysisName) dynamoDBItem.analysisName = { S: item.analysisName }
-  if (item.eventName) dynamoDBItem.eventName = { S: item.eventName }
-  if (item.data) dynamoDBItem.data = { S: item.data }
+  if (item.analysisName != null) dynamoDBItem.analysisName = { S: item.analysisName }
+  if (item.eventName != null) dynamoDBItem.eventName = { S: item.eventName }
+  if (item.data != null) dynamoDBItem.data = { S: item.data }
   const command = new PutItemCommand({
     TableName: process.env.ENTRIES_TABLE_NAME,
     Item: dynamoDBItem
