@@ -19,7 +19,6 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
   // Parse input from request
   try {
     body = insertEntryBodySchema.parse(JSON.parse(event.body ?? ''))
-    await sendDiscordMessage(body)
   } catch (e) {
     let message: string = 'Bad Request'
     if (e instanceof Error) {
@@ -39,13 +38,16 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
 
   // Pass through message to Entries API
   const entriesURL = await getEntriesURL()
-  await axios.post(`${entriesURL}users/${body.username}/entries`, {
+  const logToDatabasePromise = axios.post(`${entriesURL}users/${body.username}/entries`, {
     timestamp: Date.now(),
     username: body.username,
     analysisName: body.analysisName,
     eventName: body.eventName,
     data: body.data
   })
+  const sendDiscordMessagePromise = sendDiscordMessage(body)
+
+  await Promise.all([logToDatabasePromise, sendDiscordMessagePromise])
 
   return {
     statusCode: 200,
@@ -53,10 +55,10 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
   }
 }
 
-async function getEntriesURL(): Promise<string> {
+async function getEntriesURL (): Promise<string> {
   const client = new SSMClient({ region: 'us-east-1' })
   const command = new GetParameterCommand({
-    Name: 'HamsterEntriesBaseURL',
+    Name: 'HamsterEntriesBaseURL'
   })
 
   const output = await client.send(command)
