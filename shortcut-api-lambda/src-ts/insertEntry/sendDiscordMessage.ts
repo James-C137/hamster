@@ -29,6 +29,6 @@ export async function sendDiscordMessage (entryBody: InsertEntryBody): Promise<v
     }
   })
 
-  await client.login(process.env.CLIENT_TOKEN)
+  await client.login(process.env.DISCORD_CLIENT_TOKEN)
   await client.destroy()
 }

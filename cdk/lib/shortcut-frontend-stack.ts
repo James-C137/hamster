@@ -1,9 +1,13 @@
 import { Duration, Stack, type Environment, type StackProps } from 'aws-cdk-lib'
 import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway'
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { StringParameter } from 'aws-cdk-lib/aws-ssm'
 import { type Construct } from 'constructs'
+
+const dotenv = require('dotenv')
+dotenv.config()
 
 interface ShortcutFrontendStackProps extends StackProps {
   env: Environment
@@ -26,9 +30,22 @@ export class ShortcutFrontendStack extends Stack {
     const lambda = new NodejsFunction(this, 'hamster-shortcut-api-lambda', {
       functionName: 'HamsterShortcutAPILambda',
       runtime: Runtime.NODEJS_16_X,
-      entry: '../entries-api-lambda/src-ts/handler.ts',
-      timeout: Duration.seconds(15)
+      entry: '../shortcut-api-lambda/src-ts/handler.ts',
+      timeout: Duration.seconds(15),
+      environment: {
+        'DISCORD_CLIENT_TOKEN': process.env.DISCORD_CLIENT_TOKEN ?? ''
+      }
     })
+
+    lambda.addToRolePolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: [
+        'ssm:GetParameter'
+      ],
+      resources: [
+        '*'
+      ]
+    }))
 
     return lambda
   }
