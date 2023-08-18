@@ -1,5 +1,6 @@
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
 import { z } from 'zod'
+import { sendDiscordMessage } from './sendDiscordMessage'
 
 const insertEntryBodySchema = z.object({
   username: z.string(),
@@ -8,14 +9,14 @@ const insertEntryBodySchema = z.object({
   data: z.string().optional()
 })
 
-type InsertEntryBody = z.infer<typeof insertEntryBodySchema>
+export type InsertEntryBody = z.infer<typeof insertEntryBodySchema>
 
 export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   let body: InsertEntryBody
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     body = insertEntryBodySchema.parse(JSON.parse(event.body ?? ''))
+    await sendDiscordMessage(body)
   } catch (e) {
     let message: string = 'Bad Request'
     if (e instanceof Error) {

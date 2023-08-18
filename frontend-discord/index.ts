@@ -1,6 +1,6 @@
-import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm'
+// import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm'
 import axios from 'axios'
-import { Client, Events, GatewayIntentBits, type Message } from 'discord.js'
+import { Client, Events, GatewayIntentBits, type TextChannel, type Message } from 'discord.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -9,10 +9,14 @@ const client = new Client({
     GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 })
 
-const entriesAPIBaseURL = await getEntriesAPIBaseURL()
+// const entriesAPIBaseURL = await getEntriesAPIBaseURL()
 
-client.once(Events.ClientReady, (c) => {
-  console.log(`Logged in as ${c.user.tag}`)
+client.once(Events.ClientReady, async (client) => {
+  console.log(`Logged in as ${client.user.tag}`)
+  const channel = client.channels.cache.get('1137838577393340539') as TextChannel
+  if (channel != null) {
+    await channel.send('test')
+  }
 })
 
 client.on('messageCreate', async (message: Message) => {
@@ -24,7 +28,7 @@ client.on('messageCreate', async (message: Message) => {
     const parsedMessage = parseMessage(
       message.author.username, message.content.substring(2)
     )
-    await axios.post(`${entriesAPIBaseURL}users/${parsedMessage.username}/entries`, parsedMessage)
+    // await axios.post(`${entriesAPIBaseURL}users/${parsedMessage.username}/entries`, parsedMessage)
     await message.reply(`username: ${parsedMessage.username}, ` +
     `analysisName: ${parsedMessage.analysisName}, ` +
     `eventName: ${parsedMessage.eventName}, ` +
@@ -35,21 +39,21 @@ client.on('messageCreate', async (message: Message) => {
 // login bot
 await client.login(process.env.CLIENT_TOKEN)
 
-async function getEntriesAPIBaseURL (): Promise<string> {
-  const client = new SSMClient({ region: 'us-east-1' })
-  const command = new GetParameterCommand({
-    Name: 'HamsterEntriesBaseURL'
-  })
+// async function getEntriesAPIBaseURL (): Promise<string> {
+//   const client = new SSMClient({ region: 'us-east-1' })
+//   const command = new GetParameterCommand({
+//     Name: 'HamsterEntriesBaseURL'
+//   })
 
-  const output = await client.send(command)
-  const url = output.Parameter?.Value
+//   const output = await client.send(command)
+//   const url = output.Parameter?.Value
 
-  if (url === undefined) {
-    throw new Error('Failed to fetch Entries API base URL')
-  }
+//   if (url === undefined) {
+//     throw new Error('Failed to fetch Entries API base URL')
+//   }
 
-  return url
-}
+//   return url
+// }
 
 function parseMessage (username: string, text: string): ParsedMessageType {
   const words = text.split(' ')
