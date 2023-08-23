@@ -9,7 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy --all --profile hamster-cdk"
+    "deploy": "cdk deploy --all --profile hamster-cdk",
+    "deploy-default": "cdk deploy --all"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",

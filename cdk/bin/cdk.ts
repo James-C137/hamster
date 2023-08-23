@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { App, type Environment } from 'aws-cdk-lib'
-import { DiscordFrontendStack } from '../lib/discord-frontent-stack'
 import { EntryManagementStack } from '../lib/entries-management-stack'
 import { ShortcutFrontendStack } from '../lib/shortcut-frontend-stack'
 
@@ -12,10 +11,6 @@ const defaultEnv: Environment = {
 const app = new App()
 
 new EntryManagementStack(app, 'HamsterEntryManagementStack', {
-  env: defaultEnv
-})
-
-new DiscordFrontendStack(app, 'HamsterDiscordFrontendStack', {
   env: defaultEnv
 })
 
