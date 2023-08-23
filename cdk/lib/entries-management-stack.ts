@@ -20,8 +20,7 @@ export class EntryManagementStack extends Stack {
     super(scope, id, props)
     this.props = props
 
-    this.entriesTable = this.createEntriesTable()
-    this.entriesAPILambda = this.createEntriesAPILambda(this.entriesTable)
+    this.entriesAPILambda = this.createEntriesAPILambda()
     this.apiGatway = this.createAPIGateway(this.entriesAPILambda)
   }
 
@@ -33,17 +32,19 @@ export class EntryManagementStack extends Stack {
     return table
   }
 
-  private createEntriesAPILambda (entriesTable: ITable): NodejsFunction {
+  private createEntriesAPILambda (): NodejsFunction {
     const lambda = new NodejsFunction(this, 'hamster-entries-api-lambda', {
       functionName: 'HamsterEntriesAPILambda',
       runtime: Runtime.NODEJS_16_X,
       entry: '../entries-api-lambda/src-ts/handler.ts',
       environment: {
-        ENTRIES_TABLE_NAME: entriesTable.tableName
+        HOST: 'dpg-cjj7jnj37aks73borr30-a.oregon-postgres.render.com',
+        PORT: '5432',
+        DATABASE_NAME: 'hamster_entries',
+        USER: 'hamster',
+        PASSWORD: 'FpfSfWQf0ujZKM28SIEDKKZbcSJKqVW0'
       }
     })
-
-    entriesTable.grantReadWriteData(lambda)
 
     return lambda
   }

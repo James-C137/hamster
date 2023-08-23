@@ -1,6 +1,8 @@
-import { DynamoDBClient, PutItemCommand, type AttributeValue } from '@aws-sdk/client-dynamodb'
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
+import { Client } from 'pg'
 import { z } from 'zod'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const insertEntryBodySchema = z.object({
   timestamp: z.coerce.date(),
@@ -42,17 +44,21 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
 }
 
 async function putItemCommand (item: InsertEntryBody): Promise<void> {
-  const client = new DynamoDBClient({ region: process.env.REGION })
-  const dynamoDBItem: Record<string, AttributeValue> = {
-    username: { S: item.username },
-    timestamp: { S: item.timestamp.toJSON() }
-  }
-  if (item.analysisName != null) dynamoDBItem.analysisName = { S: item.analysisName }
-  if (item.eventName != null) dynamoDBItem.eventName = { S: item.eventName }
-  if (item.data != null) dynamoDBItem.data = { S: item.data }
-  const command = new PutItemCommand({
-    TableName: process.env.ENTRIES_TABLE_NAME,
-    Item: dynamoDBItem
+  const postgresClient = new Client({
+    host: process.env.HOST,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    port: parseInt(process.env.PORT!),
+    database: process.env.DATABASE_NAME,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    ssl: true
   })
-  await client.send(command)
+
+  await postgresClient.connect()
+  await postgresClient.query(
+    'INSERT INTO logs(username, analysisName, eventName, data) VALUES ' +
+    `('${item.username}', '${item.analysisName ?? ''}', ` +
+    `'${item.eventName ?? ''}', '${item.data ?? ''}')`
+  )
+  await postgresClient.end()
 }
