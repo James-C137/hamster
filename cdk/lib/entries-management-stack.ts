@@ -1,6 +1,5 @@
 import { Stack, type Environment, type StackProps } from 'aws-cdk-lib'
 import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway'
-import { Table, type ITable } from 'aws-cdk-lib/aws-dynamodb'
 import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { StringParameter } from 'aws-cdk-lib/aws-ssm'
@@ -12,7 +11,6 @@ interface EntryManagementStackProps extends StackProps {
 
 export class EntryManagementStack extends Stack {
   private readonly props: EntryManagementStackProps
-  public readonly entriesTable: ITable
   public readonly entriesAPILambda: NodejsFunction
   public readonly apiGatway: RestApi
 
@@ -22,14 +20,6 @@ export class EntryManagementStack extends Stack {
 
     this.entriesAPILambda = this.createEntriesAPILambda()
     this.apiGatway = this.createAPIGateway(this.entriesAPILambda)
-  }
-
-  private createEntriesTable (): ITable {
-    const table = Table.fromTableArn(
-      this,
-      'hamster-entries-table',
-      'arn:aws:dynamodb:us-east-1:740983408400:table/HamsterEntriesTable')
-    return table
   }
 
   private createEntriesAPILambda (): NodejsFunction {
