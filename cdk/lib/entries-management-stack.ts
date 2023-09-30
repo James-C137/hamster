@@ -19,7 +19,7 @@ export class EntryManagementStack extends Stack {
     this.props = props
 
     this.entriesAPILambda = this.createEntriesAPILambda()
-    this.apiGatway = this.createAPIGateway(this.entriesAPILambda)
+    this.apiGatway = this.createAPIGateway()
   }
 
   private createEntriesAPILambda (): NodejsFunction {
@@ -39,15 +39,17 @@ export class EntryManagementStack extends Stack {
     return lambda
   }
 
-  private createAPIGateway (entriesAPILambda: NodejsFunction): RestApi {
+  private createAPIGateway (): RestApi {
     const apiGateway = new RestApi(this, 'hamster-entries-api-gateway', {
-      restApiName: 'HamsterEntriesAPI'
+      restApiName: 'HamsterEntriesAPI',
+      defaultIntegration: new LambdaIntegration(this.entriesAPILambda)
     })
 
     // Create all sub-resources
-    this.createPingResource(apiGateway, entriesAPILambda)
+    this.createPingResource(apiGateway)
     this.createUsersResource(apiGateway)
-    this.createEntriesResource(apiGateway, entriesAPILambda)
+    this.createEntriesResource(apiGateway)
+    this.createSqlResource(apiGateway)
 
     // Export base URL into Systems Manager Parameter Store
     new StringParameter(this, 'hamster-entries-api-gateway-url', {
@@ -58,9 +60,9 @@ export class EntryManagementStack extends Stack {
     return apiGateway
   }
 
-  private createPingResource (apiGateway: RestApi, entriesAPILambda: NodejsFunction): void {
+  private createPingResource (apiGateway: RestApi): void {
     const ping = apiGateway.root.addResource('ping')
-    ping.addMethod('GET', new LambdaIntegration(entriesAPILambda))
+    ping.addMethod('GET')
   }
 
   private createUsersResource (apiGateway: RestApi): void {
@@ -68,10 +70,17 @@ export class EntryManagementStack extends Stack {
     users.addResource('{userID}')
   }
 
-  private createEntriesResource (apiGateway: RestApi, entriesAPILambda: NodejsFunction): void {
+  private createEntriesResource (apiGateway: RestApi): void {
     const users = apiGateway.root.getResource('users')
     const userID = users?.getResource('{userID}')
     const entries = userID?.addResource('entries')
-    entries?.addMethod('POST', new LambdaIntegration(entriesAPILambda))
-  };
+    entries?.addMethod('POST')
+  }
+
+  private createSqlResource(apiGateway: RestApi): void {
+    const users = apiGateway.root.getResource('users')
+    const userID = users?.getResource('{userID}')
+    const sql = userID?.addResource('sql')
+    sql?.addMethod('POST')
+  }
 }
