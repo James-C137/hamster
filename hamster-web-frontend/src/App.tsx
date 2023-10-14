@@ -5,11 +5,6 @@ import './App.css';
 import { Shell } from './components/layout/Shell';
 import { Visualization } from './components/visualization/Visualization';
 
-// const chartFactoryData: IChartFactoryData = {
-//   chartType: 'line',
-//   chartData: data
-// }
-
 function App() {
   const [userName, setUserName] = useState('james_c137');
   const [visualizations, setVisualizations] = useState(['weight', 'workout', 'calories', 'creatine', 'smth else']);
