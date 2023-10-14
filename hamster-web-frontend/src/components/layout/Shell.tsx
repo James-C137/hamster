@@ -1,6 +1,7 @@
 import { AppShell, Burger, Button, Group, Modal, Skeleton, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ReactNode } from 'react';
+import NewChartMenu from './NewChartMenu';
 
 interface ShellProps {
   children?: ReactNode;
@@ -24,8 +25,7 @@ export function Shell({ children }: ShellProps) {
         <Group h="100%" px="md">
           <Burger opened={isBurgerOpen} onClick={toggleBurger} hiddenFrom="sm" size="sm" />
           <Text size="xl" fw={700}>🐹 Hamster</Text>
-          <Button variant="filled" onClick={openModal}>Make New Chart</Button>
-          <Modal opened={isModalOpen} onClose={closeModal} title="Make new Chart" centered>Test</Modal>
+          <NewChartMenu />
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
