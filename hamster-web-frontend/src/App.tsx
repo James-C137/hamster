@@ -16,10 +16,12 @@ function App() {
 
   const renderCharts = () => {
     const charts: ReactNode[] = [];
+    let i = 0;
     visualizations.forEach(visualization => {
       charts.push(
-        <Visualization title={visualization} userName={userName} chartType={''} traceId={''} />
+        <Visualization key={i} title={visualization} userName={userName} chartType={''} traceId={''} />
       );
+      i++;
     });
     return charts;
   }

@@ -18,7 +18,7 @@ export function Visualization({ title, userName, chartType, traceId }: IVisualiz
       setTraceData(traceData);
     }
     getTraceData();
-  })
+  }, [userName, traceId]);
 
   return (
     <>
