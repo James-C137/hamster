@@ -4,16 +4,19 @@ import { LineChart, lineChartDataParser } from './LineChart';
 
 export const chartFactoryDataParser = z.discriminatedUnion('chartType', [
   z.object({
+    chartType: z.literal('empty')
+  }),
+  z.object({
     chartType: z.literal('line'),
     chartData: lineChartDataParser
   })
 ]);
 
-export type ChartFactoryData = z.infer<typeof chartFactoryDataParser>;
+export type IChartFactoryData = z.infer<typeof chartFactoryDataParser>;
 
 export interface IChartFactoryProps {
   title: string;
-  data: ChartFactoryData
+  data: IChartFactoryData
 };
 
 /**
@@ -21,7 +24,7 @@ export interface IChartFactoryProps {
  */
 export function ChartFactory({ title, data }: IChartFactoryProps) {
 
-  const getChart = (data: ChartFactoryData) => {
+  const getChart = (data: IChartFactoryData) => {
     data = chartFactoryDataParser.parse(data);
 
     switch (data.chartType) {
