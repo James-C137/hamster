@@ -56,19 +56,19 @@ const NewChartMenu: React.FC = () => {
   }
 
   const fadeInFromRight = {
-    animation: 'fadeInFromRight 0.5s forwards'
+    animation: 'fadeInFromRight 0.25s forwards'
   };
   
   const fadeOutToLeft = {
-    animation: 'fadeOutToLeft 0.5s forwards'
+    animation: 'fadeOutToLeft 0.25s forwards'
   };
   
   const fadeInFromLeft = {
-    animation: 'fadeInFromLeft 0.5s forwards'
+    animation: 'fadeInFromLeft 0.25s forwards'
   };
   
   const fadeOutToRight = {
-    animation: 'fadeOutToRight 0.5s forwards'
+    animation: 'fadeOutToRight 0.25s forwards'
   };
   
 
