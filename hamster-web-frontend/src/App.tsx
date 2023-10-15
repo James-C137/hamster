@@ -6,7 +6,9 @@ import { Shell } from './components/layout/Shell';
 import { Visualization } from './components/visualization/Visualization';
 
 function App() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userName, setUserName] = useState('james_c137');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [visualizations, setVisualizations] = useState(['weight', 'workout', 'calories', 'creatine', 'smth else']);
 
   const renderCharts = () => {

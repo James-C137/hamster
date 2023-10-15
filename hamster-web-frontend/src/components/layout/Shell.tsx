@@ -1,4 +1,4 @@
-import { AppShell, Burger, Button, Group, Modal, Skeleton, Text } from '@mantine/core';
+import { AppShell, Burger, Group, Skeleton, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ReactNode } from 'react';
 import NewChartMenu from './NewChartMenu';
@@ -9,7 +9,6 @@ interface ShellProps {
 
 export function Shell({ children }: ShellProps) {
   const [isBurgerOpen, { toggle: toggleBurger }] = useDisclosure();
-  const [isModalOpen, { open: openModal, close: closeModal }] = useDisclosure();
 
   return (
     <AppShell
