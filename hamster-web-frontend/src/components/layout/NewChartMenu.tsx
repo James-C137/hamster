@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, Text, Paper } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconArrowLeftTail } from '@tabler/icons-react';
 
 const NewChartMenu: React.FC = () => {
   const [opened, { open, close }] = useDisclosure();
@@ -30,20 +29,7 @@ const NewChartMenu: React.FC = () => {
     borderRadius: '15px'    
   } as React.CSSProperties;
   const paperStyle = { padding: '1rem', height: '400px' } as React.CSSProperties;
-  const subtextStyle = { color: 'lightgray', marginTop: '5px', fontSize: '13px' } as React.CSSProperties;
-  const backButtonStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    color: 'white', // Changed color to white
-    backgroundColor: 'rgba(0, 0, 0, 0.6)', // Added a semi-transparent black background
-    padding: '5px 10px', // Added padding
-    borderRadius: '5px', // Rounded corners
-    cursor: 'pointer',
-    position: 'absolute',
-    top: '10px',
-    left: '10px'
-  } as React.CSSProperties;
-  
+  const subtextStyle = { color: 'lightgray', marginTop: '5px', fontSize: '13px' } as React.CSSProperties;  
 
   const buttonTextStyle = {
     display: 'flex',
@@ -78,7 +64,6 @@ const NewChartMenu: React.FC = () => {
           </Paper>
         ) : (
           <Paper style={paperStyle}>
-            <div onClick={() => {setPage(1)}}>Test Aliens</div>
             <Text style={{ ...titleStyle, textAlign: 'center', marginTop: '100px' }}>{selectedButton}</Text>
           </Paper>
         )}
