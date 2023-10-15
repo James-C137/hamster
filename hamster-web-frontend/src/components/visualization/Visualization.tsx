@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { TraceDAO } from "../../dataAccessObjects/TraceDAO";
+import { ITraceData } from "../../models/ITraceData";
+import { IChartTypes } from "../chart/ChartConstants";
 import { ChartFactory } from "../chart/ChartFactory";
 
 interface IVisualizationProps {
   title: string;
   userName: string;
-  chartType: string;
+  chartType: IChartTypes;
   traceId: string;
 }
 
 export function Visualization({ title, userName, chartType, traceId }: IVisualizationProps) {
-  const [traceData, setTraceData] = useState<any>(null);
+  const [traceData, setTraceData] = useState<ITraceData | null>(null);
 
   useEffect(() => {
     const getTraceData = async () => {
@@ -24,7 +26,7 @@ export function Visualization({ title, userName, chartType, traceId }: IVisualiz
     <>
       {
         traceData
-        ? <ChartFactory title={title} data={traceData} />
+        ? <ChartFactory title={title} type={chartType} data={traceData} />
         : null
       }
     </>
