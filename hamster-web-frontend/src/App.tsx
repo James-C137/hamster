@@ -16,7 +16,7 @@ function App() {
     let i = 0;
     visualizations.forEach(visualization => {
       charts.push(
-        <Visualization key={i} title={visualization} userName={userName} chartType={''} traceId={''} />
+        <Visualization key={i} title={visualization} userName={userName} chartType={'line'} traceId={''} />
       );
       i++;
     });
