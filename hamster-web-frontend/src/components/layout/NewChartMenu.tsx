@@ -6,11 +6,14 @@ const NewChartMenu: React.FC = () => {
   const [opened, { open, close }] = useDisclosure();
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [prevPage, setPrevPage] = useState<number | null>(null);
 
   const handleButtonClick = (value: string) => {
+      setPrevPage(page);
     setSelectedButton(value);
     setPage(2);
   };
+
 
   const titleStyle = { fontWeight: 700, fontSize: '1.5rem', textAlign: 'center' } as React.CSSProperties;
   const buttonStyle = {
@@ -44,15 +47,41 @@ const NewChartMenu: React.FC = () => {
     marginBottom: '10px', // Adjust as needed
   } as React.CSSProperties;
 
+  const pageIconStyle = {
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    margin: '5px 5px',
+    outline: '1px solid'
+  }
+
+  const fadeInFromRight = {
+    animation: 'fadeInFromRight 0.5s forwards'
+  };
+  
+  const fadeOutToLeft = {
+    animation: 'fadeOutToLeft 0.5s forwards'
+  };
+  
+  const fadeInFromLeft = {
+    animation: 'fadeInFromLeft 0.5s forwards'
+  };
+  
+  const fadeOutToRight = {
+    animation: 'fadeOutToRight 0.5s forwards'
+  };
+  
+
   return (
     <div>
       <Button onClick={open}>Open Modal</Button>
   
       <Modal opened={opened} onClose={close} size="xl" centered>
+      <div style={{overflowX: 'hidden'}}>
         <Text style={titleStyle}>Make New Chart</Text>
   
         {page === 1 ? (
-          <Paper style={paperStyle}>
+            <Paper style={{...paperStyle, ...(page === 1 ? (prevPage === 2 ? fadeInFromLeft : {}) : fadeOutToLeft) }}>            
             {['Time Between', 'Log User-Inputted Value', 'Log Time', 'Custom SQL'].map((text, idx) => (
               <Button key={idx} style={{ ...buttonStyle, ...buttonSpacing }} onClick={() => handleButtonClick(text)}>
                 <div style={buttonTextStyle}>
@@ -63,14 +92,18 @@ const NewChartMenu: React.FC = () => {
             ))}
           </Paper>
         ) : (
-          <Paper style={paperStyle}>
+        <Paper style={{...paperStyle, ...(page === 2 ? (prevPage === 1 ? fadeInFromRight : {}) : fadeOutToRight) }}>
             <Text style={{ ...titleStyle, textAlign: 'center', marginTop: '100px' }}>{selectedButton}</Text>
           </Paper>
         )}
   
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-          <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: page === 1 ? 'black' : 'lightgray', margin: '0 5px' }} onClick={() => setPage(1)}></span>
-          <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: page === 2 ? 'black' : 'lightgray', margin: '0 5px' }}></span>
+          <span style={{ ...pageIconStyle, backgroundColor: page === 1 ? 'black' : 'lightgray',  outlineColor: page === 1 ? 'black' : 'lightgray' }} onClick={() => {
+              setPrevPage(page);
+              setPage(1);
+          }}></span>
+          <span style={{ ...pageIconStyle, backgroundColor: page === 2 ? 'black' : 'white', outlineColor: 'black' }}></span>
+        </div>
         </div>
       </Modal>
     </div>
