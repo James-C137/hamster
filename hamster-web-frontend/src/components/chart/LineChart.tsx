@@ -21,6 +21,7 @@ export function LineChart({ data }: ILineChartProps) {
   return (
     <ResponsiveLine
       data={data}
+      animate={false}
       margin={{ top: 25, right: 110, bottom: 50, left: 60 }}
       xScale={{ type: 'point' }}
       yScale={{
