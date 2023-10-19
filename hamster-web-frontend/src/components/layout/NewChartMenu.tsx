@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, Text, Paper } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
@@ -6,24 +6,11 @@ const NewChartMenu: React.FC = () => {
   const [opened, { open, close }] = useDisclosure();
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [prevPage, setPrevPage] = useState<number | null>(null);
-  const [animationStyle, setAnimationStyle] = useState({});
 
   const handleButtonClick = (value: string) => {
-    setPrevPage(page);
     setSelectedButton(value);
     setPage(2);
   };
-
-  useEffect(() => {
-    let newAnimationStyle = {};
-    if (page === 1) {
-      newAnimationStyle = prevPage === 2 ? fadeInFromLeft : {};
-    } else if (page === 2) {
-      newAnimationStyle = prevPage === 1 ? fadeInFromRight : {};
-    }
-    setAnimationStyle(newAnimationStyle);
-  }, [page, prevPage]);
 
   const titleStyle = { fontWeight: 700, fontSize: '1.5rem', textAlign: 'center' } as React.CSSProperties;
 const buttonStyle = {
@@ -73,7 +60,7 @@ const pageIconStyle = {
           <Text style={titleStyle}>Make New Chart</Text>
 
           {page === 1 ? (
-            <Paper style={{ ...paperStyle, ...animationStyle }}>
+            <Paper style={{ ...paperStyle }}>
               {['Time Between', 'Log User-Inputted Value', 'Log Time', 'Custom SQL'].map((text, idx) => (
                 <Button key={idx} style={{ ...buttonStyle, ...buttonSpacing }} onClick={() => handleButtonClick(text)}>
                   <div style={buttonTextStyle}>
@@ -84,7 +71,7 @@ const pageIconStyle = {
               ))}
             </Paper>
           ) : (
-            <Paper style={{ ...paperStyle, ...animationStyle }}>
+            <Paper style={{ ...paperStyle }}>
               <Text style={{ ...titleStyle, textAlign: 'center', marginTop: '100px' }}>{selectedButton}</Text>
             </Paper>
           )}
@@ -93,7 +80,6 @@ const pageIconStyle = {
             <span
               style={{ ...pageIconStyle, backgroundColor: page === 1 ? 'black' : 'lightgray', outlineColor: page === 1 ? 'black' : 'lightgray' }}
               onClick={() => {
-                setPrevPage(page);
                 setPage(1);
               }}
             ></span>
