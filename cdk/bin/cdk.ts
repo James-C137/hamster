@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { App, type Environment } from 'aws-cdk-lib'
-import { EntryManagementStack } from '../lib/entries-management-stack'
+import { ChartsServiceStack } from '../lib/charts-service-stack'
+import { LogsServiceStack } from '../lib/logs-management-stack'
 import { ShortcutFrontendStack } from '../lib/shortcut-frontend-stack'
 
 const defaultEnv: Environment = {
@@ -10,7 +11,11 @@ const defaultEnv: Environment = {
 
 const app = new App()
 
-new EntryManagementStack(app, 'HamsterEntryManagementStack', {
+new LogsServiceStack(app, 'HamsterLogsServiceStack', {
+  env: defaultEnv
+})
+
+new ChartsServiceStack(app, 'HamsterChartsServiceStack', {
   env: defaultEnv
 })
 

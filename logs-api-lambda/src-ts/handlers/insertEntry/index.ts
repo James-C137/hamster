@@ -28,7 +28,7 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
 
   const logsEntityDAO: LogsEntityDAO = new LogsEntityPostgresDAO()
   logsEntityDAO.connect()
-  logsEntityDAO.postLogs(body)
+  logsEntityDAO.postLog(body)
   logsEntityDAO.disconnect()
 
   return {
