@@ -1,21 +1,13 @@
-import { Client } from 'pg';
+import { Client, QueryResult } from 'pg';
 import { LogEntity } from '../LogEntity';
 import LogsEntityDAO from './LogsEntityDAO';
 
 export class LogsEntityPostgresDAO implements LogsEntityDAO {
 
-  private client: Client | undefined;
+  private client: Client;
 
-  public async connect(): Promise<void> {
-
-  }
-
-  public async disconnect(): Promise<void> {
-
-  }
-
-  public async getLog(): Promise<LogEntity> {
-    const postgresClient = new Client({
+  public constructor() {
+    this.client = new Client({
       host: process.env.HOST,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       port: parseInt(process.env.PORT!),
@@ -24,10 +16,18 @@ export class LogsEntityPostgresDAO implements LogsEntityDAO {
       password: process.env.PASSWORD,
       ssl: true
     })
+  }
 
-    await postgresClient.connect()
-    await postgresClient.query("")
-    await postgresClient.end()
+  public async connect(): Promise<void> {
+    await this.client.connect()
+  }
+
+  public async disconnect(): Promise<void> {
+    await this.client.end()
+  }
+
+  public async getLog(): Promise<LogEntity> {
+    const result: QueryResult = await this.client.query("")
 
     return {
       username: ''
@@ -35,23 +35,11 @@ export class LogsEntityPostgresDAO implements LogsEntityDAO {
   };
 
   public async postLogs(entity: LogEntity): Promise<boolean> {
-    const postgresClient = new Client({
-      host: process.env.HOST,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      port: parseInt(process.env.PORT!),
-      database: process.env.DATABASE_NAME,
-      user: process.env.USER,
-      password: process.env.PASSWORD,
-      ssl: true
-    })
-
-    await postgresClient.connect()
-    await postgresClient.query(
+    await this.client.query(
       'INSERT INTO logs(username, analysisName, eventName, data) VALUES ' +
       `('${entity.username}', '${entity.analysisName ?? ''}', ` +
       `'${entity.eventName ?? ''}', '${entity.data ?? ''}')`
     )
-    await postgresClient.end()
 
     return true;
   };

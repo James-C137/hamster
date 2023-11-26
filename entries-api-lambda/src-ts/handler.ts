@@ -1,6 +1,6 @@
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
-import { insertEntry } from './insertEntry'
-import { ping } from './ping'
+import { insertEntry } from './resource-handlers/insertEntry'
+import { ping } from './resource-handlers/ping'
 
 type EventHandler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult>
 
