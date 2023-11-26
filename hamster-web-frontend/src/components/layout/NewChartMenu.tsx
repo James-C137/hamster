@@ -117,7 +117,7 @@ const NewChartMenu: React.FC = () => {
               />
               <Text>
                 <ol>
-                  <li>Download the <a href={selectedButton?.exampleLink}>example shortcut</a>.</li>
+                  <li>Download the <a href={selectedButton?.exampleLink} target="_blank">example shortcut</a>.</li>
                   <li>Change the username to {username.length > 0 ? <b>{username}</b> : 'your username'}.</li>
                   <li>Change the eventName to {newTemplateName.length > 0 ? <b>{newTemplateName}.</b> : 'the name you choose above.'}</li>
                   <li>Change the data field to be anything you want.</li>
