@@ -1,23 +1,15 @@
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
-import { Client } from 'pg'
-import { z } from 'zod'
 import dotenv from 'dotenv'
+import { Client } from 'pg'
+import { PostLogsRequestBody, postLogsRequestBodySchema } from '../entities/logs/api-models/PutLogRequestBody'
+import LogsEntityDAO from '../entities/logs/dao/LogsEntityDAO'
+import { LogsEntityPostgresDAO } from '../entities/logs/dao/LogsEntityPostgresDAO'
 dotenv.config()
 
-const insertEntryBodySchema = z.object({
-  timestamp: z.coerce.date(),
-  username: z.string(),
-  analysisName: z.string().optional(),
-  eventName: z.string().optional(),
-  data: z.string().optional()
-})
-
-type InsertEntryBody = z.infer<typeof insertEntryBodySchema>
-
 export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
-  let body: InsertEntryBody
+  let body: PostLogsRequestBody
   try {
-    body = insertEntryBodySchema.parse(JSON.parse(event.body ?? ''))
+    body = postLogsRequestBodySchema.parse(JSON.parse(event.body ?? ''))
   } catch (e) {
     let message: string = 'Bad Request'
     if (e instanceof Error) {
@@ -35,7 +27,8 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
     }
   }
 
-  await putItemCommand(body)
+  const logsEntityDAO: LogsEntityDAO = new LogsEntityPostgresDAO()
+  logsEntityDAO.postLogs(body)
 
   return {
     statusCode: 200,
@@ -43,7 +36,7 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
   }
 }
 
-async function putItemCommand (item: InsertEntryBody): Promise<void> {
+async function putItemCommand (item: PostLogsRequestBody): Promise<void> {
   const postgresClient = new Client({
     host: process.env.HOST,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
