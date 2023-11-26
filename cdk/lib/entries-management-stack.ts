@@ -46,6 +46,7 @@ export class EntryManagementStack extends Stack {
     })
 
     // Create all sub-resources
+    this.createLogsResource(apiGateway)
     this.createPingResource(apiGateway)
     this.createUsersResource(apiGateway)
     this.createEntriesResource(apiGateway)
@@ -58,6 +59,11 @@ export class EntryManagementStack extends Stack {
     })
 
     return apiGateway
+  }
+
+  private createLogsResource (apiGateway: RestApi): void {
+    const logsResource = apiGateway.root.addResource('logs');
+    logsResource.addMethod('GET');
   }
 
   private createPingResource (apiGateway: RestApi): void {

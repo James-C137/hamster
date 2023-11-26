@@ -1,4 +1,5 @@
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda'
+import { getLogHandler } from './resource-handlers/getLogHandler'
 import { insertEntry } from './resource-handlers/insertEntry'
 import { ping } from './resource-handlers/ping'
 
@@ -7,6 +8,7 @@ type EventHandler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResu
 export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   const handlers: Record<string, EventHandler> = {}
   handlers['GET /ping'] = ping
+  handlers['GET /logs'] = getLogHandler
   handlers['POST /users/{userID}/entries'] = insertEntry
 
   const key = `${event.httpMethod} ${event.resource}`
