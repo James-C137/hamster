@@ -26,7 +26,7 @@ export class EntryManagementStack extends Stack {
     const lambda = new NodejsFunction(this, 'hamster-entries-api-lambda', {
       functionName: 'HamsterEntriesAPILambda',
       runtime: Runtime.NODEJS_16_X,
-      entry: '../entries-api-lambda/src-ts/handler.ts',
+      entry: '../logs-api-lambda/src-ts/handlers/handler.ts',
       environment: {
         HOST: 'dpg-cjj7jnj37aks73borr30-a.oregon-postgres.render.com',
         PORT: '5432',
