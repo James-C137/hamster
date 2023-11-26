@@ -62,8 +62,8 @@ export class EntryManagementStack extends Stack {
   }
 
   private createLogsResource (apiGateway: RestApi): void {
-    const logsResource = apiGateway.root.addResource('logs');
-    logsResource.addMethod('GET');
+    const logsResource = apiGateway.root.addResource('logs')
+    logsResource.addMethod('GET')
   }
 
   private createPingResource (apiGateway: RestApi): void {
@@ -83,7 +83,7 @@ export class EntryManagementStack extends Stack {
     entries?.addMethod('POST')
   }
 
-  private createSqlResource(apiGateway: RestApi): void {
+  private createSqlResource (apiGateway: RestApi): void {
     const users = apiGateway.root.getResource('users')
     const userID = users?.getResource('{userID}')
     const sql = userID?.addResource('sql')
