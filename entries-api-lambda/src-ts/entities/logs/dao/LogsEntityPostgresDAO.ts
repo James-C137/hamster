@@ -26,9 +26,53 @@ export class LogsEntityPostgresDAO implements LogsEntityDAO {
   }
 
   public async getLog (query: string): Promise<LogEntity[]> {
-    const result = await this.client.query(query)
+    console.log(`query: ${query}`)
+
     console.log('inside function')
-    console.log(result)
+
+    const test = await this.client.query(query)
+    console.log('from await')
+    console.log(test)
+
+    /*
+     command: 'SELECT',
+  rowCount: 47,
+  oid: null,
+  rows: [
+    {
+      id: 25,
+      ts: 2023-08-24T15:34:09.804Z,
+      username: 'premelon',
+      analysisname: '',
+      eventname: 'energy',
+      data: '3'
+    },
+    {
+      id: 27,
+      ts: 2023-08-24T17:57:19.354Z,
+      username: 'premelon',
+      analysisname: '',
+      eventname: 'energy',
+      data: 'hungry'
+    },
+    {
+      id: 33,
+      ts: 2023-08-24T20:35:10.078Z,
+      username: 'premelon',
+      analysisname: '',
+      eventname: 'energy',
+      data: '1'
+    },
+    {
+      id: 34,
+      ts: 2023-08-24T21:26:31.043Z,
+      username: 'premelon',
+      analysisname: '',
+      eventname: 'energy',
+      data: '3'
+    },
+  ]
+  */
 
     return [{
       username: '',
