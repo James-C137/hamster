@@ -8,7 +8,7 @@ export async function getLogHandler (event: APIGatewayProxyEvent): Promise<APIGa
   await logsEntityDAO.connect()
   // TODO: Query
   const query = "SELECT * FROM logs WHERE username = 'premelon' AND eventName = 'energy'"
-  const logs = await logsEntityDAO.getLog(query)
+  const logs = await logsEntityDAO.getLogs(query)
 
   await logsEntityDAO.disconnect()
 
