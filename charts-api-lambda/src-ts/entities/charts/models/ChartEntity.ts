@@ -1,7 +1,7 @@
 import { ChartType } from "./ChartType";
 
 export interface ChartEntity {
-  userId: string;
+  ownerId: string;
   chartId?: string;
   type?: ChartType;
   query?: string;

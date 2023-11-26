@@ -33,7 +33,7 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
     this.client = undefined;
   }
 
-  public async getCharts(userId: string): Promise<ChartEntity[]> {
+  public async getCharts(ownerId: string): Promise<ChartEntity[]> {
     if (!this.client) {
       return [];
     }
@@ -41,7 +41,7 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
     const command = new QueryCommand({
       TableName: this.tableName,
       KeyConditionExpression: 'pk = :ownerID',
-      ExpressionAttributeValues: { ':pk': { S: userId }}
+      ExpressionAttributeValues: { ':pk': { S: ownerId }}
     })
 
     const output = await this.client.send(command)
@@ -49,7 +49,7 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
     output.Items?.forEach(item => {
       const chartType = chartTypeSchema.safeParse(item?.chartId?.S)
       chartEntities.push({
-        userId: userId,
+        ownerId: ownerId,
         chartId: item?.chartId?.S,
         type: chartType.success ? chartType.data : undefined,
         query: item?.query?.S
@@ -65,7 +65,7 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
     }
 
     const item: Record<string, AttributeValue> = {}
-    item.userID = { S: chartEntity.userId }
+    item.ownerID = { S: chartEntity.ownerId }
     if (chartEntity.chartId) { item.chartID = { S: chartEntity.chartId } }
     if (chartEntity.type) { item.type = { S: chartEntity.type } }
     if (chartEntity.query) { item.query = { S: chartEntity.query } }
@@ -78,7 +78,7 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
     await this.client.send(command)
   }
 
-  public async deleteChart(userId: string, chartId: string): Promise<void> {
+  public async deleteChart(ownerId: string, chartId: string): Promise<void> {
     if (!this.client) {
       return;
     }
