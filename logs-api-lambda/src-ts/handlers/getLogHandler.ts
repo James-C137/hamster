@@ -3,6 +3,8 @@ import type LogsEntityDAO from '../entities/logs/dao/LogsEntityDAO'
 import { LogsEntityPostgresDAO } from '../entities/logs/dao/LogsEntityPostgresDAO'
 import { logQuery } from '../entities/logs/postgres/QueryGenerator'
 
+
+// test: https://7ieqxzxmqh.execute-api.us-east-1.amazonaws.com/prod/logs?queryType=LOG_TIME&username=premelon&eventname=energy
 export async function getLogHandler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   const logsEntityDAO: LogsEntityDAO = new LogsEntityPostgresDAO()
 
