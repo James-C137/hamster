@@ -30,7 +30,7 @@ export class LogsServiceStack extends Stack {
       environment: {
         HOST: 'dpg-cjj7jnj37aks73borr30-a.oregon-postgres.render.com',
         PORT: '5432',
-        DATABASE_NAME: 'hamster_logs',
+        DATABASE_NAME: 'hamster_entries',
         USER: 'hamster',
         PASSWORD: 'FpfSfWQf0ujZKM28SIEDKKZbcSJKqVW0'
       }

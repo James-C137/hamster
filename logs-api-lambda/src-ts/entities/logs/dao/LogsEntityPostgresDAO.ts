@@ -27,13 +27,16 @@ export class LogsEntityPostgresDAO implements LogsEntityDAO {
   }
 
   public async getLogs(query: string): Promise<LogEntity[]> {
-    const result: QueryResult = await this.client.query("")
+    const result: QueryResult = await this.client.query(query)
 
-    return [
-      {
-        username: ''
+    return result.rows.map(row => {
+      return {
+        username: row.username,
+        analysisName: row.analysisname,
+        eventName: row.eventname,
+        data: row.data
       }
-    ];
+    });
   };
 
   public async postLog(entity: LogEntity): Promise<boolean> {
