@@ -48,7 +48,8 @@ export class ChartsServiceStack extends Stack {
       runtime: Runtime.NODEJS_18_X,
       entry: '../charts-api-lambda/src-ts/handlers/handler.ts',
       environment: {
-        'CHARTS_TABLE_NAME': chartsTable.tableName
+        'CHARTS_TABLE_NAME': chartsTable.tableName,
+        'REGION': 'us-east-1'
       }
     })
 

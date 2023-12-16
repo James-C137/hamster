@@ -49,7 +49,7 @@ export async function getChartsHandler (event: APIGatewayProxyEvent): Promise<AP
   const chartEntitiesWithLogs = await Promise.all(chartEntities.map(
     chartEntity => {
       return axios.get(
-        `${LOGS_API_URL}/queryType=${chartEntity.queryType}&username=${chartEntity.ownerId}&eventname=${chartEntity.eventName}`
+        `${LOGS_API_URL}?queryType=${chartEntity.queryType}&username=${chartEntity.ownerId}&eventname=${chartEntity.eventName}`
       )
   }))
 

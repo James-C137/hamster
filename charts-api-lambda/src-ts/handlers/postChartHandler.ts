@@ -5,6 +5,7 @@ import { ChartEntityDAO } from '../entities/charts/dao/ChartEntityDAO';
 import { ChartEntityDynamoDBDAO } from '../entities/charts/dao/ChartEntityDynamoDBDAO';
 import { PostChartRequestBody, postChartReqeustBodySchema } from '../entities/charts/models/PostChartRequestBody';
 import { PostChartRequestQueryStrings, postChartRequestQueryStringsSchema } from '../entities/charts/models/PostChartRequestQueryStrings';
+import { request } from 'http';
 
 export async function postChartHandler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   let processEnvironment: ProcessEnvironment
@@ -35,8 +36,8 @@ export async function postChartHandler (event: APIGatewayProxyEvent): Promise<AP
     ownerId: queryStrings.ownerId,
     chartId: uuid(),
     type: requestBody.type,
-    queryType: requestBody.query,
-    eventName: 'LOG_TIME'
+    queryType: requestBody.queryType,
+    eventName: requestBody.eventName
   })
   chartEntityDAO.disconnect()
 

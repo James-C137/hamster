@@ -39,8 +39,8 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
 
     const command = new QueryCommand({
       TableName: this.tableName,
-      KeyConditionExpression: 'pk = :ownerID',
-      ExpressionAttributeValues: { ':pk': { S: ownerId }}
+      KeyConditionExpression: 'ownerID = :ownerID',
+      ExpressionAttributeValues: { ':ownerID': { S: ownerId }}
     })
 
     const output = await this.client.send(command)
@@ -49,9 +49,10 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
       const chartType = chartTypeSchema.safeParse(item?.chartId?.S)
       chartEntities.push({
         ownerId: ownerId,
-        chartId: item?.chartId?.S,
-        type: chartType.success ? chartType.data : undefined,
-        queryType: item?.query?.S
+        chartId: item?.chartId?.S ?? '',
+        type: chartType.success ? chartType.data : 'UNKNOWN',
+        queryType: item?.query?.S ?? '',
+        eventName: item?.eventName?.S ?? ''
       })
     })
 
