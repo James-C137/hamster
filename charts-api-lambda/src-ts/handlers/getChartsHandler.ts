@@ -53,7 +53,10 @@ export async function getChartsHandler (event: APIGatewayProxyEvent): Promise<AP
           const response = await axios.get(
               `${LOGS_API_URL}?queryType=${chartEntity.queryType}&username=${chartEntity.ownerId}&eventname=${chartEntity.eventName}`
           );
-          return response.data;
+          return {
+            ...chartEntity,
+            rows: response.data.map((row: { data: any; }) => row.data)
+          }
       } catch (error) {
           console.error('Error fetching data for chart entity:', error);
           return null;
