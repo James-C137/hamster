@@ -5,7 +5,7 @@ import { postChartHandler } from './postChartHandler'
 
 type EventHandler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult>
 
-export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+export async function mainHandler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   const handlers: Record<string, EventHandler> = {}
   handlers['GET /charts'] = getChartsHandler
   handlers['POST /charts'] = postChartHandler

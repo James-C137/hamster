@@ -46,7 +46,8 @@ export class ChartsServiceStack extends Stack {
     const lambda = new NodejsFunction(this, 'hamster-charts-api-lambda', {
       functionName: 'HamsterChartsAPILambda',
       runtime: Runtime.NODEJS_18_X,
-      entry: '../charts-api-lambda/src-ts/handlers/handler.ts',
+      entry: '../charts-service-api/src/lambda-handlers/mainHandler.ts',
+      handler: 'mainHandler',
       environment: {
         'CHARTS_TABLE_NAME': chartsTable.tableName,
         'CHARTS_TABLE_REGION': 'us-east-1'
