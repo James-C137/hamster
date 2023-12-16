@@ -31,6 +31,7 @@ export class LogsEntityPostgresDAO implements LogsEntityDAO {
 
     return result.rows.map(row => {
       return {
+        ts: row.ts,
         username: row.username,
         analysisName: row.analysisname,
         eventName: row.eventname,

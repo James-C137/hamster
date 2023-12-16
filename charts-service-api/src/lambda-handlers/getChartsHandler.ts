@@ -26,7 +26,7 @@ export async function getChartsHandler (event: APIGatewayProxyEvent): Promise<AP
           );
           return {
             ...chartEntity,
-            rows: response.data.map((row: { data: any; }) => row.data)
+            rows: response.data
           }
       } catch (error) {
           console.error('Error fetching data for chart entity:', error);
