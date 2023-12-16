@@ -27,6 +27,7 @@ export async function getLogHandler (event: APIGatewayProxyEvent): Promise<APIGa
     event.queryStringParameters.username,
     event.queryStringParameters.eventname
   )
+  console.log(`query: ${query}`);
   const logs = await logsEntityDAO.getLogs(query)
 
   await logsEntityDAO.disconnect()

@@ -4,6 +4,10 @@ import { ChartEntityDAO } from '../entities/charts/dao/ChartEntityDAO';
 import { ChartEntityDynamoDBDAO } from '../entities/charts/dao/ChartEntityDynamoDBDAO';
 import { GetChartsRequestQueryStrings, getChartsRequestQueryStringsSchema } from '../entities/charts/models/GetChartsRequestQueryStrings';
 import { GetChartsResponseBody } from '../entities/charts/models/GetChartsResponseBody';
+import { logQuery } from '../../../logs-api-lambda/src-ts/entities/logs/postgres/QueryGenerator'
+import axios from 'axios'
+
+const LOGS_API_URL = 'https://7ieqxzxmqh.execute-api.us-east-1.amazonaws.com/prod/logs'
 
 export async function getChartsHandler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   let processEnvironment: ProcessEnvironment
@@ -29,14 +33,38 @@ export async function getChartsHandler (event: APIGatewayProxyEvent): Promise<AP
   const chartEntityDAO: ChartEntityDAO = new ChartEntityDynamoDBDAO(processEnvironment.CHARTS_TABLE_NAME)
   chartEntityDAO.connect()
   const chartEntities = await chartEntityDAO.getCharts(queryStrings.ownerId)
+
+  /*
+  ownerId: string;
+  chartId?: string;
+  type?: ChartType;
+  queryType?: string;
+  eventName?: string
+  */
+
   chartEntityDAO.disconnect()
 
-  const responseBody: GetChartsResponseBody = {
-    charts: chartEntities
-  }
+  // test: https://7ieqxzxmqh.execute-api.us-east-1.amazonaws.com/prod/logs?queryType=LOG_TIME&username=premelon&eventname=energy
+
+  const chartEntitiesWithLogs = await Promise.all(chartEntities.map(
+    chartEntity => {
+      return axios.get(
+        `${LOGS_API_URL}/queryType=${chartEntity.queryType}&username=${chartEntity.ownerId}&eventname=${chartEntity.eventName}`
+      )
+  }))
+
+  console.log(chartEntitiesWithLogs);
+
+  // what's remaining
+  /*
+   * 1. change GetChartsResponseBody to use a new type that contains info necessary for the frontend
+     2. add code in here to convert each queryType into a query and run it against logs API
+     3. compile that into one object and return it to frontend
+    */
+  
 
   return {
     statusCode: 200,
-    body: JSON.stringify(responseBody)
+    body: JSON.stringify(chartEntitiesWithLogs)
   }
 }

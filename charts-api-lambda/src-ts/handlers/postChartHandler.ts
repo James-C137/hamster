@@ -35,7 +35,8 @@ export async function postChartHandler (event: APIGatewayProxyEvent): Promise<AP
     ownerId: queryStrings.ownerId,
     chartId: uuid(),
     type: requestBody.type,
-    query: requestBody.query
+    queryType: requestBody.query,
+    eventName: 'LOG_TIME'
   })
   chartEntityDAO.disconnect()
 

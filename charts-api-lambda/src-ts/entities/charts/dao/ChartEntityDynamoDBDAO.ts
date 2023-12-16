@@ -4,7 +4,6 @@ import { chartTypeSchema } from '../models/ChartType';
 import { ChartEntityDAO } from './ChartEntityDAO';
 
 export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
-
   private readonly tableName: string;
   private client: DynamoDBClient | undefined;
 
@@ -52,7 +51,7 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
         ownerId: ownerId,
         chartId: item?.chartId?.S,
         type: chartType.success ? chartType.data : undefined,
-        query: item?.query?.S
+        queryType: item?.query?.S
       })
     })
 
@@ -68,7 +67,7 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
     item.ownerID = { S: chartEntity.ownerId }
     if (chartEntity.chartId) { item.chartID = { S: chartEntity.chartId } }
     if (chartEntity.type) { item.type = { S: chartEntity.type } }
-    if (chartEntity.query) { item.query = { S: chartEntity.query } }
+    if (chartEntity.queryType) { item.query = { S: chartEntity.queryType } }
 
     const command = new PutItemCommand({
       TableName: this.tableName,
