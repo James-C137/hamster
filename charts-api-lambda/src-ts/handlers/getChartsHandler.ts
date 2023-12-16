@@ -33,6 +33,8 @@ export async function getChartsHandler (event: APIGatewayProxyEvent): Promise<AP
   const chartEntityDAO: ChartEntityDAO = new ChartEntityDynamoDBDAO(processEnvironment.CHARTS_TABLE_NAME)
   chartEntityDAO.connect()
   const chartEntities = await chartEntityDAO.getCharts(queryStrings.ownerId)
+  console.log('chartEntities');
+  console.log(chartEntities);
 
   /*
   ownerId: string;
@@ -46,13 +48,19 @@ export async function getChartsHandler (event: APIGatewayProxyEvent): Promise<AP
 
   // test: https://7ieqxzxmqh.execute-api.us-east-1.amazonaws.com/prod/logs?queryType=LOG_TIME&username=premelon&eventname=energy
 
-  const chartEntitiesWithLogs = await Promise.all(chartEntities.map(
-    chartEntity => {
-      return axios.get(
-        `${LOGS_API_URL}?queryType=${chartEntity.queryType}&username=${chartEntity.ownerId}&eventname=${chartEntity.eventName}`
-      )
-  }))
+  const chartEntitiesWithLogs = await Promise.all(chartEntities.map(async (chartEntity) => {
+    try {
+          const response = await axios.get(
+              `${LOGS_API_URL}?queryType=${chartEntity.queryType}&username=${chartEntity.ownerId}&eventname=${chartEntity.eventName}`
+          );
+          return response.data;
+      } catch (error) {
+          console.error('Error fetching data for chart entity:', error);
+          return null;
+      }
+  }));
 
+  console.log('chartEntitiesWithLogs');
   console.log(chartEntitiesWithLogs);
 
   // what's remaining

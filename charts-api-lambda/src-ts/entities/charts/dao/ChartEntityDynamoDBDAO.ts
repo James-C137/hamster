@@ -42,6 +42,8 @@ export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
       KeyConditionExpression: 'ownerID = :ownerID',
       ExpressionAttributeValues: { ':ownerID': { S: ownerId }}
     })
+    console.log('command');
+    console.log(command);
 
     const output = await this.client.send(command)
     const chartEntities: ChartEntity[] = []
