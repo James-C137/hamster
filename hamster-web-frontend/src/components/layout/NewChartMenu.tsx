@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, Text, Paper, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import axios from 'axios';
 
 type Shortcut = {
   title: string;
@@ -8,6 +9,8 @@ type Shortcut = {
   subtext: string;
   exampleLink: string
 }
+
+const CHARTS_API_URL = 'https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts';
 
 const NewChartMenu: React.FC = () => {
   const [opened, { open, close }] = useDisclosure();
@@ -29,9 +32,16 @@ const NewChartMenu: React.FC = () => {
     setPage(2);
   };
 
-  const createShortcut = (selectedButton: Shortcut, name: string, username: string) => {
+  const createShortcut = async (selectedButton: Shortcut, name: string, username: string) => {
     console.log(name + ' ' + username);
     // add API here
+    // https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts?ownerId=premelon
+
+    await axios.post(`${CHARTS_API_URL}?ownerId=${username}`, JSON.stringify({
+      type: "LINE",
+      queryType: selectedButton.type,
+      eventName: name
+    }))
   }
 
   const titleStyle = { fontWeight: 700, fontSize: '1.5rem', textAlign: 'center' } as React.CSSProperties;
