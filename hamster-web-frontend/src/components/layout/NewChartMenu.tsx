@@ -31,6 +31,7 @@ const NewChartMenu: React.FC = () => {
 
   const createShortcut = (selectedButton: Shortcut, name: string, username: string) => {
     console.log(name + ' ' + username);
+    // add API here
   }
 
   const titleStyle = { fontWeight: 700, fontSize: '1.5rem', textAlign: 'center' } as React.CSSProperties;

@@ -60,7 +60,8 @@ export class ChartEntityDatabase {
     item.ownerID = { S: chartEntity.ownerId }
     if (chartEntity.chartId) { item.chartID = { S: chartEntity.chartId } }
     if (chartEntity.type) { item.type = { S: chartEntity.type } }
-    if (chartEntity.queryType) { item.query = { S: chartEntity.queryType } }
+    if (chartEntity.queryType) { item.queryType = { S: chartEntity.queryType } }
+    if (chartEntity.eventName) { item.eventName = {S: chartEntity.eventName }}
 
     const command = new PutItemCommand({
       TableName: this.tableName,

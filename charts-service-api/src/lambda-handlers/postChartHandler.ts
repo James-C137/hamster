@@ -1,4 +1,5 @@
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda';
+import { request } from 'http';
 import { v4 as uuid } from 'uuid';
 import ResponseUtils from '../../../lambda-utils/src-ts/ResponseUtils';
 import { PostChartRequestBody, postChartReqeustBodySchema } from '../api-schema/PostChartRequestBody';
@@ -14,6 +15,9 @@ export async function postChartHandler (event: APIGatewayProxyEvent): Promise<AP
   } catch (e) {
     return ResponseUtils.badRequest(e);
   }
+
+  console.log(`ownerId: ${queryStrings.ownerId}`)
+  console.log(requestBody);
 
   const chartEntityDatabase: ChartEntityDatabase = new ChartEntityDatabase()
   chartEntityDatabase.connect()
