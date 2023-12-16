@@ -1,30 +1,20 @@
 import { AttributeValue, DynamoDBClient, PutItemCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
-import { ChartEntity } from '../models/ChartEntity';
-import { chartTypeSchema } from '../models/ChartType';
-import { ChartEntityDAO } from './ChartEntityDAO';
+import ProcessEnvUtils from '../../../../lambda-utils/src-ts/ProcessEnvUtils';
+import { ChartEntity } from './ChartEntity';
+import { chartTypeSchema } from './ChartType';
 
-export class ChartEntityDynamoDBDAO implements ChartEntityDAO {
+export class ChartEntityDatabase {
   private readonly tableName: string;
   private client: DynamoDBClient | undefined;
 
-  public constructor(tableName: string) {
-    this.tableName = tableName
+  public constructor() {
+    this.tableName = ProcessEnvUtils.getVar('CHARTS_TABLE_NAME');
     this.connect()
   }
 
   public connect(): void {
-    if (this.client) {
-      return;
-    }
-
-    const region = process.env.REGION
-    if (!region) {
-      throw new Error('process.env.REGION not found.')
-    }
-
-    this.client =  new DynamoDBClient({
-      region: region
-    });
+    if (this.client) return;
+    this.client = new DynamoDBClient({region: ProcessEnvUtils.getVar('CHARTS_TABLE_REGION')});
   }
 
   public disconnect(): void {

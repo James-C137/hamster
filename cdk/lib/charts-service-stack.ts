@@ -49,7 +49,7 @@ export class ChartsServiceStack extends Stack {
       entry: '../charts-api-lambda/src-ts/handlers/handler.ts',
       environment: {
         'CHARTS_TABLE_NAME': chartsTable.tableName,
-        'REGION': 'us-east-1'
+        'CHARTS_TABLE_REGION': 'us-east-1'
       }
     })
 

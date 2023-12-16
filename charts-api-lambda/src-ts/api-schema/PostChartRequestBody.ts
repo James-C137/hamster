@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { chartTypeSchema } from './ChartType';
+import { chartTypeSchema } from '../database-entities/charts/ChartType';
 
 export const postChartReqeustBodySchema = z.object({
   type: chartTypeSchema,
