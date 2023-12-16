@@ -26,13 +26,14 @@ export class LogsServiceStack extends Stack {
     const lambda = new NodejsFunction(this, 'hamster-logs-api-lambda', {
       functionName: 'HamsterLogsAPILambda',
       runtime: Runtime.NODEJS_16_X,
-      entry: '../logs-api-lambda/src-ts/handlers/handler.ts',
+      entry: '../logs-service-api/src/lambda-handlers/mainHandler.ts',
+      handler: 'mainHandler',
       environment: {
-        HOST: 'dpg-cjj7jnj37aks73borr30-a.oregon-postgres.render.com',
-        PORT: '5432',
+        DATABASE_HOST: 'dpg-cjj7jnj37aks73borr30-a.oregon-postgres.render.com',
+        DATABASE_PORT: '5432',
         DATABASE_NAME: 'hamster_entries',
-        USER: 'hamster',
-        PASSWORD: 'FpfSfWQf0ujZKM28SIEDKKZbcSJKqVW0'
+        DATABASE_USER: 'hamster',
+        DATABASE_PASSWORD: 'FpfSfWQf0ujZKM28SIEDKKZbcSJKqVW0'
       }
     })
 
@@ -46,10 +47,9 @@ export class LogsServiceStack extends Stack {
     })
 
     // Create all sub-resources
-    this.createLogsResource(apiGateway)
-    this.createPingResource(apiGateway)
-    this.createUsersResource(apiGateway)
-    this.createSqlResource(apiGateway)
+    const logsResource = apiGateway.root.addResource('logs')
+    logsResource.addMethod('GET')
+    logsResource.addMethod('POST')
 
     // Export base URL into Systems Manager Parameter Store
     new StringParameter(this, 'hamster-logs-api-gateway-url', {
@@ -58,28 +58,5 @@ export class LogsServiceStack extends Stack {
     })
 
     return apiGateway
-  }
-
-  private createLogsResource (apiGateway: RestApi): void {
-    const logsResource = apiGateway.root.addResource('logs')
-    logsResource.addMethod('GET')
-    logsResource.addMethod('POST')
-  }
-
-  private createPingResource (apiGateway: RestApi): void {
-    const ping = apiGateway.root.addResource('ping')
-    ping.addMethod('GET')
-  }
-
-  private createUsersResource (apiGateway: RestApi): void {
-    const users = apiGateway.root.addResource('users')
-    users.addResource('{userID}')
-  }
-
-  private createSqlResource (apiGateway: RestApi): void {
-    const users = apiGateway.root.getResource('users')
-    const userID = users?.getResource('{userID}')
-    const sql = userID?.addResource('sql')
-    sql?.addMethod('POST')
   }
 }

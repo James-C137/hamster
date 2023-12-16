@@ -24,6 +24,7 @@ export default class ResponseUtils {
     return {
       statusCode,
       headers: {
+        'Access-Control-Allow-Origin': '*',
         'Content-Type': contentType
       },
       body: currentBody

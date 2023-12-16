@@ -1,19 +1,18 @@
 import { Client, QueryResult } from 'pg';
-import { LogEntity } from '../LogEntity';
-import LogsEntityDAO from './LogsEntityDAO';
+import ProcessEnvUtils from '../../../../lambda-utils/src-ts/ProcessEnvUtils';
+import { LogEntity } from './LogEntity';
 
-export class LogsEntityPostgresDAO implements LogsEntityDAO {
+export class LogsEntityDatabase {
 
   private client: Client;
 
   public constructor() {
     this.client = new Client({
-      host: process.env.HOST,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      port: parseInt(process.env.PORT!),
-      database: process.env.DATABASE_NAME,
-      user: process.env.USER,
-      password: process.env.PASSWORD,
+      host: ProcessEnvUtils.getVar('DATABASE_HOST'),
+      port: parseInt(ProcessEnvUtils.getVar('DATABASE_PORT')),
+      database: ProcessEnvUtils.getVar('DATABASE_NAME'),
+      user: ProcessEnvUtils.getVar('DATABASE_USER'),
+      password: ProcessEnvUtils.getVar('DATABASE_PASSWORD'),
       ssl: true
     })
   }
@@ -40,13 +39,11 @@ export class LogsEntityPostgresDAO implements LogsEntityDAO {
     });
   };
 
-  public async postLog(entity: LogEntity): Promise<boolean> {
+  public async postLog(entity: LogEntity): Promise<void> {
     await this.client.query(
       'INSERT INTO logs(username, analysisName, eventName, data) VALUES ' +
       `('${entity.username}', '${entity.analysisName ?? ''}', ` +
       `'${entity.eventName ?? ''}', '${entity.data ?? ''}')`
     )
-
-    return true;
   };
 }
