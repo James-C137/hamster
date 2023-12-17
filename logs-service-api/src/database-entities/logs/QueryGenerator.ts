@@ -1,4 +1,6 @@
-export function logQuery (queryType: string, username: string, eventName: string): string {
+import { QueryType } from './QueryType'
+
+export function logQuery (queryType: QueryType, username: string, eventName: string): string {
   switch (queryType) {
     case 'LOG_TIME':
       return `SELECT * FROM logs WHERE username = '${username}' AND eventName = '${eventName}'`

@@ -1,7 +1,9 @@
 import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambda';
 import axios from 'axios';
 import ResponseUtils from '../../../lambda-utils/src-ts/ResponseUtils';
-import { GetChartsRequestQueryStrings, getChartsRequestQueryStringsSchema } from '../api-schema/GetChartsRequestQueryStrings';
+import { getLogsResponseBodySchema } from '../../../logs-service-api/src/api-schema/getLogsApiSchema';
+import { ChartWithLogs, GetChartsRequestQueryStrings, chartWithLogsSchema, getChartsRequestQueryStringsSchema, getChartsResponseBodySchema } from '../api-schema/getChartsApiSchema';
+import { ChartEntity } from '../database-entities/charts/ChartEntity';
 import { ChartEntityDatabase } from '../database-entities/charts/ChartEntityDatabase';
 
 const LOGS_API_URL = 'https://7ieqxzxmqh.execute-api.us-east-1.amazonaws.com/prod/logs'
@@ -15,34 +17,22 @@ export async function getChartsHandler (event: APIGatewayProxyEvent): Promise<AP
   }
 
   const chartEntityDatabase = new ChartEntityDatabase()
-  chartEntityDatabase.connect()
+  await chartEntityDatabase.connect()
   const chartEntities = await chartEntityDatabase.getCharts(queryStrings.ownerId)
-  chartEntityDatabase.disconnect()
+  await chartEntityDatabase.disconnect()
 
-  const chartEntitiesWithLogs = await Promise.all(chartEntities.map(async (chartEntity) => {
-    try {
-          const response = await axios.get(
-              `${LOGS_API_URL}?queryType=${chartEntity.queryType}&username=${chartEntity.ownerId}&eventname=${chartEntity.eventName}`
-          );
-          return {
-            ...chartEntity,
-            rows: response.data
-          }
-      } catch (error) {
-          console.error('Error fetching data for chart entity:', error);
-          return null;
-      }
-  }));
+  const chartsWithLogs = (await Promise.all(chartEntities.map(enrichChartWithLogs))).filter(e => e !== null);
+  const responseBody = getChartsResponseBodySchema.parse({charts: chartsWithLogs});
+  return ResponseUtils.ok(responseBody);
+}
 
-  console.log('chartEntitiesWithLogs');
-  console.log(chartEntitiesWithLogs);
-
-  // what's remaining
-  /*
-   * 1. change GetChartsResponseBody to use a new type that contains info necessary for the frontend
-     2. add code in here to convert each queryType into a query and run it against logs API
-     3. compile that into one object and return it to frontend
-    */
-  
-  return ResponseUtils.ok(chartEntitiesWithLogs);
+async function enrichChartWithLogs(chartEntity: ChartEntity): Promise<ChartWithLogs | null> {
+  try {
+    const response = await axios.get(`${LOGS_API_URL}?ownerId=${chartEntity.ownerId}&eventName=${chartEntity.eventName}&queryType=${chartEntity.queryType}`);
+    const logs = getLogsResponseBodySchema.parse(response.data);
+    return chartWithLogsSchema.parse({...chartEntity, logs});
+  } catch (error) {
+    console.error('Error fetching data for chart entity', chartEntity, error);
+    return null;
+  }
 }

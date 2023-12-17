@@ -10,6 +10,10 @@ export default class ResponseUtils {
     return this.createResponse(400, 'Bad Request', body);
   }
 
+  public static notImplemented(body?: unknown): APIGatewayProxyResult {
+    return this.createResponse(501, 'Not Implemented', body);
+  }
+
   private static createResponse(statusCode: number, defaultBody: string, body: unknown): APIGatewayProxyResult {
     let currentBody: string = defaultBody;
     let contentType = 'text/plain';

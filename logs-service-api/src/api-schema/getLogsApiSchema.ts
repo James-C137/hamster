@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { queryTypsSchema } from './queryTypes';
+import { queryTypeSchema } from '../database-entities/logs/QueryType';
 
 export const getLogsQueryStringParametersSchema = z.object({
   ownerId: z.string(),
   eventName: z.string(),
-  queryType: queryTypsSchema
+  queryType: queryTypeSchema
 });
 
 export type GetLogsQueryStringParameters = z.infer<typeof getLogsQueryStringParametersSchema>;

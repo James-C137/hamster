@@ -1,7 +1,6 @@
 import { AttributeValue, DynamoDBClient, PutItemCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
 import ProcessEnvUtils from '../../../../lambda-utils/src-ts/ProcessEnvUtils';
-import { ChartEntity } from './ChartEntity';
-import { chartTypeSchema } from './ChartType';
+import { ChartEntity, chartEntitySchema } from './ChartEntity';
 
 export class ChartEntityDatabase {
   private readonly tableName: string;
@@ -12,12 +11,12 @@ export class ChartEntityDatabase {
     this.connect()
   }
 
-  public connect(): void {
+  public async connect(): Promise<void> {
     if (this.client) return;
-    this.client = new DynamoDBClient({region: ProcessEnvUtils.getVar('CHARTS_TABLE_REGION')});
+    this.client = new DynamoDBClient({region: ProcessEnvUtils.getVar('CHARTS_TABLE_REGION')});;
   }
 
-  public disconnect(): void {
+  public async disconnect(): Promise<void> {
     this.client?.destroy();
     this.client = undefined;
   }
@@ -32,20 +31,17 @@ export class ChartEntityDatabase {
       KeyConditionExpression: 'ownerID = :ownerID',
       ExpressionAttributeValues: { ':ownerID': { S: ownerId }}
     })
-    console.log('command');
-    console.log(command);
 
     const output = await this.client.send(command)
     const chartEntities: ChartEntity[] = []
     output.Items?.forEach(item => {
-      const chartType = chartTypeSchema.safeParse(item?.chartId?.S)
-      chartEntities.push({
+      chartEntities.push(chartEntitySchema.parse({
         ownerId: ownerId,
-        chartId: item?.chartId?.S ?? '',
-        type: chartType.success ? chartType.data : 'UNKNOWN',
-        queryType: item?.query?.S ?? '',
-        eventName: item?.eventName?.S ?? ''
-      })
+        chartId: item?.chartID?.S,
+        chartType: item?.chartType?.S,
+        queryType: item?.queryType?.S,
+        eventName: item?.eventName?.S
+      }))
     })
 
     return chartEntities
@@ -59,7 +55,7 @@ export class ChartEntityDatabase {
     const item: Record<string, AttributeValue> = {}
     item.ownerID = { S: chartEntity.ownerId }
     if (chartEntity.chartId) { item.chartID = { S: chartEntity.chartId } }
-    if (chartEntity.type) { item.type = { S: chartEntity.type } }
+    if (chartEntity.chartType) { item.chartType = { S: chartEntity.chartType } }
     if (chartEntity.queryType) { item.queryType = { S: chartEntity.queryType } }
     if (chartEntity.eventName) { item.eventName = {S: chartEntity.eventName }}
 
