@@ -3,6 +3,8 @@ import { type APIGatewayProxyEvent, type APIGatewayProxyResult } from 'aws-lambd
 import axios from 'axios'
 import { z } from 'zod'
 
+const LOGS_API_URL = 'https://7ieqxzxmqh.execute-api.us-east-1.amazonaws.com/prod/logs'
+
 const insertEntryBodySchema = z.object({
   username: z.string(),
   analysisName: z.string().optional(),
@@ -36,9 +38,8 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
   }
 
   // Pass through message to Entries API
-  const entriesURL = await getEntriesURL()
-  await axios.post(`${entriesURL}users/${body.username}/entries`, {
-    timestamp: Date.now(),
+  await axios.post(`${LOGS_API_URL}?ownerId=${body.username}&eventName=${body.eventName}`, {
+    ts: Date.now(),
     username: body.username,
     analysisName: body.analysisName,
     eventName: body.eventName,
@@ -49,18 +50,4 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
     statusCode: 200,
     body: 'OK'
   }
-}
-
-async function getEntriesURL (): Promise<string> {
-  const client = new SSMClient({ region: 'us-east-1' })
-  const command = new GetParameterCommand({
-    Name: 'HamsterEntriesBaseURL'
-  })
-
-  const output = await client.send(command)
-  if (output.Parameter?.Value === undefined) {
-    throw new Error('Failed to fetch Entries API Base URL')
-  }
-
-  return output.Parameter.Value
 }
