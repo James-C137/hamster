@@ -38,7 +38,7 @@ const NewChartMenu: React.FC = () => {
     // https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts?ownerId=premelon
 
     await axios.post(`${CHARTS_API_URL}?ownerId=${username}`, JSON.stringify({
-      type: "LINE",
+      chartType: "LINE",
       queryType: selectedButton.type,
       eventName: name
     }))
