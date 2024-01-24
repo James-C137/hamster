@@ -1,8 +1,9 @@
 import { MantineProvider, SimpleGrid } from '@mantine/core';
 import '@mantine/core/styles.css';
-import { ReactNode, useState, useEffect } from 'react';
-import axios from 'axios'
+import { useEffect, useState } from 'react';
+import { ChartWithLogs } from '../../charts-service-api/src/api-schema/getChartsApiSchema';
 import './App.css';
+import { ChartsClient } from './clients/ChartsClient';
 import { Shell } from './components/layout/Shell';
 import { Visualization } from './components/visualization/Visualization';
 
@@ -19,12 +20,13 @@ function App() {
     const fetchData = async () => {
       console.log('fetching data');
       try {
-        const response = await axios.get('https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts?ownerId=james_c137');
-        let responseCharts: any = [];
+        const charts = await ChartsClient.getCharts('james_c137');
+
+        let responseCharts: ChartWithLogs[] = [];
       
         let i = 0;
-        response.data.charts.forEach((chart: any) => {
-          console.log(chart.logs)
+        charts.forEach((chart: any) => {
+          // console.log(chart.logs)
           const chartType = APIChartTypeToChartLibraryChartType(chart.chartType);
           console.log(APIChartTypeToDataProcessing(chartType, chart.logs.data));
           responseCharts.push(
