@@ -25,10 +25,10 @@ function App() {
         let responseCharts: ChartWithLogs[] = [];
       
         let i = 0;
-        charts.forEach((chart: any) => {
+        charts.forEach((chart: ChartWithLogs) => {
           // console.log(chart.logs)
           const chartType = APIChartTypeToChartLibraryChartType(chart.chartType);
-          console.log(APIChartTypeToDataProcessing(chartType, chart.logs.data));
+          console.log('chart.logs.data', APIChartTypeToDataProcessing(chartType, chart.logs.data));
           responseCharts.push(
             <Visualization
               key={i}
@@ -60,7 +60,7 @@ function App() {
   )
 }
 
-function APIChartTypeToChartLibraryChartType(apiChartType: string) {
+function APIChartTypeToChartLibraryChartType(apiChartType: string | undefined) {
   switch (apiChartType)  {
     case 'LINE':
       return 'line'
@@ -81,7 +81,7 @@ function APIChartTypeToDataProcessing(apiChartType: string, data: any) {
         
         return {
           "x": localDate,
-          "y": dateObject
+          "y": localDate//dateObject
         }
       })
   }

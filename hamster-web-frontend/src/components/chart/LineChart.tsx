@@ -4,8 +4,8 @@ import { z } from 'zod';
 export const lineChartDataParser = z.object({
   id: z.union([z.string(), z.number()]),
   data: z.object({
-    x: z.union([z.number(),z.string(), z.coerce.date()]),
-    y: z.union([z.number(),z.string(), z.coerce.date()])
+    x: z.union([z.number(), z.coerce.date(), z.string()]),
+    y: z.union([z.number(), z.coerce.date(), z.string()])
   }).array()
 }).array()
 
@@ -17,6 +17,16 @@ export interface ILineChartProps {
 
 export function LineChart({ data }: ILineChartProps) {
   data = lineChartDataParser.parse(data);
+
+  data = [{
+    id: '1',
+    data: [
+      {
+        x: new Date(), 
+        y: 1
+      }
+    ]
+  }]
 
   return (
     <ResponsiveLine
