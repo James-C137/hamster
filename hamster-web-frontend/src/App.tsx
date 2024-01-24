@@ -11,13 +11,31 @@ function App() {
   const [userName, setUserName] = useState('james_c137');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [visualizations, setVisualizations] = useState(['weight', 'workout', 'calories', 'creatine', 'smth else']);
+  const [axiosVisualizations, setAxiosVisualizations] = useState([]);
+
+  const [charts, setCharts] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts?ownerId=test');
+        const response = await axios.get('https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts?ownerId=james_c137');
         // Assuming the response contains an array of visualizations
         console.log(response.data);
+
+        let responseCharts: any = [];
+
+        // console.log(response.data.charts[0].logs);
+      
+        let i = 0;
+        response.data.charts.forEach((chart: any) => {
+          // console.log(chart.logs)
+          responseCharts.push(
+            <Visualization key={i} title={chart.logs.eventName} userName={chart.ownerId} chartType={APIChartTypeToChartLibraryChartType(chart.chartType)} traceId={''} />
+          );
+          i++;
+        });
+        
+        setCharts(responseCharts);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -26,27 +44,24 @@ function App() {
     fetchData();
   }, []); // Empty dependency array ensures this runs once on mount
 
-  const renderCharts = () => {
-    const charts: ReactNode[] = [];
-    let i = 0;
-    visualizations.forEach(visualization => {
-      charts.push(
-        <Visualization key={i} title={visualization} userName={userName} chartType={'line'} traceId={''} />
-      );
-      i++;
-    });
-    return charts;
-  }
-
   return (
     <MantineProvider>
       <Shell>
         <SimpleGrid cols={{ base: 1, sm: 1, md: 2, lg: 2, xl: 3 }} spacing="xs" >
-          { renderCharts() }
+          { charts }
         </SimpleGrid>
       </Shell>
     </MantineProvider>
   )
+}
+
+function APIChartTypeToChartLibraryChartType(apiChartType: string) {
+  switch (apiChartType)  {
+    case 'LINE':
+      return 'line'
+    default:
+      return 'empty'
+  }
 }
 
 export default App;
