@@ -6,6 +6,7 @@ import './App.css';
 import { ChartsClient } from './clients/ChartsClient';
 import { Shell } from './components/layout/Shell';
 import { Visualization } from './components/visualization/Visualization';
+import { IChartTypes } from './components/chart/ChartConstants';
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,13 +23,16 @@ function App() {
       try {
         const charts = await ChartsClient.getCharts('james_c137');
 
-        let responseCharts: ChartWithLogs[] = [];
+        let responseCharts: JSX.Element[] = [];
       
         let i = 0;
         charts.forEach((chart: ChartWithLogs) => {
           // console.log(chart.logs)
           const chartType = APIChartTypeToChartLibraryChartType(chart.chartType);
           console.log('chart.logs.data', APIChartTypeToDataProcessing(chartType, chart.logs.data));
+          const x = chart.logs.eventName;
+          const y = chartType;
+          const z = APIChartTypeToDataProcessing(chartType, chart.logs.data);
           responseCharts.push(
             <Visualization
               key={i}
@@ -60,7 +64,7 @@ function App() {
   )
 }
 
-function APIChartTypeToChartLibraryChartType(apiChartType: string | undefined) {
+function APIChartTypeToChartLibraryChartType(apiChartType: string | undefined): IChartTypes {
   switch (apiChartType)  {
     case 'LINE':
       return 'line'
