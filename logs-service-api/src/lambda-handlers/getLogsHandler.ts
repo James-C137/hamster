@@ -26,7 +26,7 @@ export async function getLogsHandler (event: APIGatewayProxyEvent): Promise<APIG
 
   const responseBody: GetLogsResponseBody = {
     eventName: queryStringParameters.eventName,
-    data: logs.map(log => [log.data, log.data])
+    data: logs.map(log => [log.ts, log.data])
   }
 
   return ResponseUtils.ok(responseBody);

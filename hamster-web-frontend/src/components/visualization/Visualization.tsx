@@ -6,29 +6,15 @@ import { ChartFactory } from "../chart/ChartFactory";
 
 interface IVisualizationProps {
   title: string;
-  userName: string;
   chartType: IChartTypes;
-  traceId: string;
+  data: any;
 }
 
-export function Visualization({ title, userName, chartType, traceId }: IVisualizationProps) {
-  const [traceData, setTraceData] = useState<ITraceData | null>(null);
-
-  useEffect(() => {
-    const getTraceData = async () => {
-      const traceData = await TraceDAO.getTrace(userName, traceId);
-      setTraceData(traceData);
-    }
-    getTraceData();
-  }, [userName, traceId]);
-
+export function Visualization({ title, chartType, data }: IVisualizationProps) {
+  console.log('data');
+  console.log(data);
   return (
-    <>
-      {
-        traceData
-        ? <ChartFactory title={title} type={chartType} data={traceData} />
-        : null
-      }
-    </>
+    <ChartFactory title={title} type={chartType} data={data} />
   );
 }
+

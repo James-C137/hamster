@@ -17,20 +17,23 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log('fetching data');
       try {
         const response = await axios.get('https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts?ownerId=james_c137');
-        // Assuming the response contains an array of visualizations
-        console.log(response.data);
-
         let responseCharts: any = [];
-
-        // console.log(response.data.charts[0].logs);
       
         let i = 0;
         response.data.charts.forEach((chart: any) => {
-          // console.log(chart.logs)
+          console.log(chart.logs)
+          const chartType = APIChartTypeToChartLibraryChartType(chart.chartType);
+          console.log(APIChartTypeToDataProcessing(chartType, chart.logs.data));
           responseCharts.push(
-            <Visualization key={i} title={chart.logs.eventName} userName={chart.ownerId} chartType={APIChartTypeToChartLibraryChartType(chart.chartType)} traceId={''} />
+            <Visualization
+              key={i}
+              title={chart.logs.eventName}
+              chartType={chartType}
+              data={APIChartTypeToDataProcessing(chartType, chart.logs.data)}
+            />
           );
           i++;
         });
@@ -61,6 +64,24 @@ function APIChartTypeToChartLibraryChartType(apiChartType: string) {
       return 'line'
     default:
       return 'empty'
+  }
+}
+
+function APIChartTypeToDataProcessing(apiChartType: string, data: any) {
+  switch (apiChartType) {
+    case 'line':
+      // currently x will be the date and y will be the time (local)
+      return data.map((point: any[]) => {
+        const timestamp = point[0];
+        const dateObject = new Date(timestamp);
+        const localDate = dateObject.toLocaleDateString(); // Format: MM/DD/YYYY (varies depending on the locale)
+        const localTime = dateObject.toLocaleTimeString(); // Format: HH:MM:SS AM/PM (varies depending on the locale)
+        
+        return {
+          "x": localDate,
+          "y": dateObject
+        }
+      })
   }
 }
 
