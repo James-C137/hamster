@@ -2,6 +2,7 @@ import { Paper, Text } from '@mantine/core';
 import { z } from 'zod';
 import { chartTypesParser } from './ChartConstants';
 import { LineChart, lineChartDataParser } from './LineChart';
+import DateTimeScatterPlot from './DateTimeScatterPlot';
 
 export const chartFactoryPropsParser = z.object({
   title: z.string(),
@@ -22,10 +23,14 @@ export function ChartFactory(props: IChartFactoryProps) {
       case 'empty':
         return null;
       case 'line':
-        return <LineChart data={lineChartDataParser.parse([{
-          id: props.title,
-          data: props.data
-        }])} />;
+        // return <LineChart data={lineChartDataParser.parse([{
+        //   id: props.title,
+        //   data: props.data
+        // }])} />;
+        const dates = ['3/3/2024', '3/4/2024', '3/5/2024'];
+        const times = ['3:27:26 PM', '4:30:00 PM', '2:15:45 PM'];
+
+        return <DateTimeScatterPlot x={dates} y={times} />
     }
   }
 

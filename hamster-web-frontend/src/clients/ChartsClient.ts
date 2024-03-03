@@ -12,6 +12,7 @@ export class ChartsClient {
 
   static async getCharts(ownerId: string): Promise<ChartWithLogs[]> {
     const response = await axios.get(`${this.API_BASE_URL}/charts?ownerId=${ownerId}`);
+    // console.log(response);
     const responseBody = getChartsResponseBodySchema.parse(response.data);
     const x = responseBody.charts;
     return responseBody.charts;

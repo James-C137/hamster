@@ -85,7 +85,7 @@ function APIChartTypeToDataProcessing(apiChartType: string, data: any) {
         
         return {
           "x": localDate,
-          "y": localDate//dateObject
+          "y": localTime//dateObject
         }
       })
   }
