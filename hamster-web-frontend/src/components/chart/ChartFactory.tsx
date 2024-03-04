@@ -1,12 +1,13 @@
 import { Paper, Text } from '@mantine/core';
 import { z } from 'zod';
 import { chartTypesParser } from './ChartConstants';
-import { LineChart, lineChartDataParser } from './LineChart';
 import DateTimeScatterPlot from './DateTimeScatterPlot';
+import LineChart from './LineChart';
+
 
 const dataPointSchema = z.object({
   x: z.string(), // Expecting a date string for x
-  y: z.string()  // Expecting a time string for y
+  y: z.string() // y can be either a time string or a value
 });
 
 export const chartFactoryPropsParser = z.object({
@@ -21,10 +22,11 @@ export type IChartFactoryProps = z.infer<typeof chartFactoryPropsParser>;
  * Creates charts with wrappers. Type of chart depends on input.
  */
 export function ChartFactory(props: IChartFactoryProps) {
-  props = chartFactoryPropsParser.parse(props);
   console.log('props');
   console.log(props);
   console.log(props.data.map(data => data.x))
+  props = chartFactoryPropsParser.parse(props);
+
 
   const getChart = (props: IChartFactoryProps) => {
     switch (props.type) {
@@ -35,6 +37,11 @@ export function ChartFactory(props: IChartFactoryProps) {
         const times = props.data.map(data => data.y);
 
         return <DateTimeScatterPlot x={dates} y={times} />
+      case 'line':
+        const x = props.data.map(data => data.x);
+        const y = props.data.map(data => data.y);
+
+        return <LineChart x={x} y={y} title={'test'} />
     }
   }
 

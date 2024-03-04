@@ -22,6 +22,8 @@ export async function getLogsHandler (event: APIGatewayProxyEvent): Promise<APIG
   )
   console.log(`query: ${query}`);
   const logs = await logsEntityDatabase.getLogs(query)
+  console.log('logs');
+  console.log(logs);
   await logsEntityDatabase.disconnect()
 
   const responseBody: GetLogsResponseBody = {

@@ -8,6 +8,7 @@ import { Shell } from './components/layout/Shell';
 import { Visualization } from './components/visualization/Visualization';
 import { IChartTypes } from './components/chart/ChartConstants';
 import Cookies from 'js-cookie';
+import { APIChartTypeToChartLibraryChartType, APIChartTypeToDataProcessing } from './components/layout/ShortcutTypes';
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,6 +21,7 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(`username: ${username}`);
       if (username == null || username.length == 0) {
         return;
       }
@@ -67,35 +69,6 @@ function App() {
       </Shell>
     </MantineProvider>
   )
-}
-
-function APIChartTypeToChartLibraryChartType(apiChartType: string | undefined): IChartTypes {
-  switch (apiChartType)  {
-    case 'LINE':
-      return 'line'
-    case 'SCATTER':
-      return 'scatter'
-    default:
-      return 'empty'
-  }
-}
-
-function APIChartTypeToDataProcessing(apiChartType: string, data: any) {
-  switch (apiChartType) {
-    case 'line':
-      // currently x will be the date and y will be the time (local)
-      return data.map((point: any[]) => {
-        const timestamp = point[0];
-        const dateObject = new Date(timestamp);
-        const localDate = dateObject.toLocaleDateString(); // Format: MM/DD/YYYY (varies depending on the locale)
-        const localTime = dateObject.toLocaleTimeString(); // Format: HH:MM:SS AM/PM (varies depending on the locale)
-        
-        return {
-          "x": localDate,
-          "y": localTime//dateObject
-        }
-      })
-  }
 }
 
 export default App;

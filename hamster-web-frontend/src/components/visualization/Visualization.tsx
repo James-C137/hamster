@@ -11,7 +11,7 @@ interface IVisualizationProps {
 }
 
 export function Visualization({ title, chartType, data }: IVisualizationProps) {
-  console.log('data');
+  console.log(`data for ${title}`);
   console.log(data);
   return (
     <ChartFactory title={title} type={chartType} data={data} />
