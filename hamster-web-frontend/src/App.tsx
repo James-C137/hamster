@@ -34,9 +34,6 @@ function App() {
           // console.log(chart.logs)
           const chartType = APIChartTypeToChartLibraryChartType(chart.chartType);
           console.log('chart.logs.data', APIChartTypeToDataProcessing(chartType, chart.logs.data));
-          const x = chart.logs.eventName;
-          const y = chartType;
-          const z = APIChartTypeToDataProcessing(chartType, chart.logs.data);
           responseCharts.push(
             <Visualization
               key={i}
@@ -76,6 +73,8 @@ function APIChartTypeToChartLibraryChartType(apiChartType: string | undefined): 
   switch (apiChartType)  {
     case 'LINE':
       return 'line'
+    case 'SCATTER':
+      return 'scatter'
     default:
       return 'empty'
   }

@@ -2,13 +2,8 @@ import React, { useState } from 'react';
 import { Button, Modal, Text, Paper, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
-
-type Shortcut = {
-  title: string;
-  type: string;
-  subtext: string;
-  exampleLink: string
-}
+import { buttonSpacing, buttonStyle, buttonTextStyle, pageIconStyle, paperStyle, subtextStyle, titleStyle } from './NewChartMenu.styles';
+import { Shortcut, shortcutTypes } from './ShortcutTypes';
 
 const CHARTS_API_URL = 'https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts';
 
@@ -38,61 +33,11 @@ const NewChartMenu: React.FC = () => {
     // https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts?ownerId=premelon
 
     await axios.post(`${CHARTS_API_URL}?ownerId=${username}`, JSON.stringify({
-      chartType: "LINE",
+      chartType: selectedButton.chartType,
       queryType: selectedButton.type,
       eventName: name
     }))
   }
-
-  const titleStyle = { fontWeight: 700, fontSize: '1.5rem', textAlign: 'center' } as React.CSSProperties;
-  const buttonStyle = {
-    width: '100%',
-    marginBottom: '10px',
-    backgroundColor: 'white',
-    borderColor: 'lightgray',
-    color: 'black',
-    textAlign: 'left',
-    padding: '10px',
-    height: '70px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center', // This will center the items vertically
-    alignItems: 'center', // This will center the items horizontally
-    borderRadius: '15px'    
-  } as React.CSSProperties;
-  const paperStyle = { padding: '1rem', height: '400px' } as React.CSSProperties;
-  const subtextStyle = { color: 'lightgray', marginTop: '5px', fontSize: '13px' } as React.CSSProperties;  
-
-  const buttonTextStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center', // ensures vertical centering
-    height: '100%', // takes the full height of the parent button
-    fontSize: '18px'
-  } as React.CSSProperties;
-
-  const buttonSpacing = {
-    marginBottom: '10px', // Adjust as needed
-  } as React.CSSProperties;
-
-  const pageIconStyle = {
-    width: '10px',
-    height: '10px',
-    borderRadius: '50%',
-    margin: '5px 5px',
-    outline: '1px solid'
-  }
-
-  // ['Time Between', 'Log User-Inputted Value', 'Log Time', 'Custom SQL']
-  const shortcutTypes: Array<Shortcut> = [
-    {
-      title: 'Log Time',
-      type: 'LOG_TIME',
-      subtext: 'What time did you do something?',
-      exampleLink: 'https://www.icloud.com/shortcuts/3c6586a381d24b4e9579ed64c494c033',
-    }
-  ];
 
   return (
     <div>

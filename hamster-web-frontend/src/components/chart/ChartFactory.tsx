@@ -30,7 +30,7 @@ export function ChartFactory(props: IChartFactoryProps) {
     switch (props.type) {
       case 'empty':
         return null;
-      case 'line':
+      case 'scatter':
         const dates = props.data.map(data => data.x);
         const times = props.data.map(data => data.y);
 
