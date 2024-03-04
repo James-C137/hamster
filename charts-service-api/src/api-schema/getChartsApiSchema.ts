@@ -12,7 +12,7 @@ export const chartWithLogsSchema = chartEntitySchema.omit({eventName: true}).ext
   logs: getLogsResponseBodySchema
 });
 
-export type ChartWithLogs = z.infer<typeof chartWithLogsSchema>;
+export type ChartWithLogs = z.infer<typeof chartWithLogsSchema>;  // Used in frontend
 
 export const getChartsResponseBodySchema = z.object({
   charts: chartWithLogsSchema.array()
