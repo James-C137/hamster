@@ -1,14 +1,17 @@
-import { AppShell, Burger, Group, Skeleton, Text } from '@mantine/core';
+import { AppShell, Burger, Group, Skeleton, Text, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import NewChartMenu from './NewChartMenu';
+import Cookies from 'js-cookie';
 
 interface ShellProps {
+  onUsernameChange: (newUsername: string) => void;
   children?: ReactNode;
 }
 
-export function Shell({ children }: ShellProps) {
+export function Shell({ onUsernameChange, children }: ShellProps) {
   const [isBurgerOpen, { toggle: toggleBurger }] = useDisclosure();
+  const [showDescription, setShowDescription] = useState(false);
 
   return (
     <AppShell
@@ -25,6 +28,20 @@ export function Shell({ children }: ShellProps) {
           <Burger opened={isBurgerOpen} onClick={toggleBurger} hiddenFrom="sm" size="sm" />
           <Text size="xl" fw={700}>🐹 Hamster</Text>
           <NewChartMenu />
+          <TextInput 
+            placeholder='username'
+            defaultValue={Cookies.get('username')}
+            onKeyDown={(event) => {
+              // Check if the key pressed is 'Enter'
+              if (event.key === 'Enter') {
+                // Call your onUsernameChange function or any other function
+                onUsernameChange(event.currentTarget.value);
+                setShowDescription(false);
+              }
+            }}
+            onChange={() => setShowDescription(true)}
+          />
+          <Text c='#b0b0b0'>{showDescription ? 'press enter to update username' : null}</Text>
         </Group>
       </AppShell.Header>
       <AppShell.Main>{children}</AppShell.Main>

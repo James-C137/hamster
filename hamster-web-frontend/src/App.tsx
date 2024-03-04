@@ -1,4 +1,4 @@
-import { MantineProvider, SimpleGrid } from '@mantine/core';
+import { MantineProvider, SimpleGrid, TextInput } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { useEffect, useState } from 'react';
 import { ChartWithLogs } from '../../charts-service-api/src/api-schema/getChartsApiSchema';
@@ -7,10 +7,11 @@ import { ChartsClient } from './clients/ChartsClient';
 import { Shell } from './components/layout/Shell';
 import { Visualization } from './components/visualization/Visualization';
 import { IChartTypes } from './components/chart/ChartConstants';
+import Cookies from 'js-cookie';
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userName, setUserName] = useState('james_c137');
+  const [username, setUsername] = useState(Cookies.get('username'));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [visualizations, setVisualizations] = useState(['weight', 'workout', 'calories', 'creatine', 'smth else']);
   const [axiosVisualizations, setAxiosVisualizations] = useState([]);
@@ -19,9 +20,12 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('fetching data');
+      if (username == null || username.length == 0) {
+        return;
+      }
+    
       try {
-        const charts = await ChartsClient.getCharts('james_c137');
+        const charts = await ChartsClient.getCharts(username);
 
         let responseCharts: JSX.Element[] = [];
       
@@ -51,11 +55,15 @@ function App() {
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, [username]); // Empty dependency array ensures this runs once on mount
 
   return (
     <MantineProvider>
-      <Shell>
+      <Shell onUsernameChange={(username: string) => {
+        console.log(`setting username to ${username}`);
+        setUsername(username);
+        Cookies.set('username', username);
+      }}>
         <SimpleGrid cols={{ base: 1, sm: 1, md: 2, lg: 2, xl: 3 }} spacing="xs" >
           { charts }
         </SimpleGrid>
