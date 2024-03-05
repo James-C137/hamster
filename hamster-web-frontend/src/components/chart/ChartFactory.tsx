@@ -46,7 +46,7 @@ export function ChartFactory(props: IChartFactoryProps) {
   }
 
   return (
-    <Paper radius="sm" withBorder p="md" h={{ base: 290, lg: 330, xl: 410 }}>
+    <Paper radius="sm" withBorder p="md">
       <Text fw={700}>{props.title}</Text>
       { getChart(props) }
     </Paper>
