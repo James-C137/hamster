@@ -13,12 +13,15 @@ import { APIChartTypeToChartLibraryChartType, APIChartTypeToDataProcessing } fro
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [username, setUsername] = useState(Cookies.get('username'));
+  const [timeRange, setTimeRange] = useState(7);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [visualizations, setVisualizations] = useState(['weight', 'workout', 'calories', 'creatine', 'smth else']);
   const [axiosVisualizations, setAxiosVisualizations] = useState([]);
 
+  const [chartsData, setChartsData] = useState<ChartWithLogs[]>([]);
   const [charts, setCharts] = useState<any[]>([]);
 
+  // get data every username change
   useEffect(() => {
     const fetchData = async () => {
       console.log(`username: ${username}`);
@@ -28,26 +31,7 @@ function App() {
     
       try {
         const charts = await ChartsClient.getCharts(username);
-
-        let responseCharts: JSX.Element[] = [];
-      
-        let i = 0;
-        charts.forEach((chart: ChartWithLogs) => {
-          // console.log(chart.logs)
-          const chartType = APIChartTypeToChartLibraryChartType(chart.chartType);
-          console.log('chart.logs.data', APIChartTypeToDataProcessing(chartType, chart.logs.data));
-          responseCharts.push(
-            <Visualization
-              key={i}
-              title={chart.logs.eventName}
-              chartType={chartType}
-              data={APIChartTypeToDataProcessing(chartType, chart.logs.data)}
-            />
-          );
-          i++;
-        });
-        
-        setCharts(responseCharts);
+        setChartsData(charts);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -56,13 +40,40 @@ function App() {
     fetchData();
   }, [username]); // Empty dependency array ensures this runs once on mount
 
+  // re-render any time data changes or date range changes
+  useEffect(() => {
+    let responseCharts: JSX.Element[] = [];
+      
+    let i = 0;
+    chartsData.forEach((chart: ChartWithLogs) => {
+      // console.log(chart.logs)
+      const chartType = APIChartTypeToChartLibraryChartType(chart.chartType);
+      console.log('chart.logs.data', APIChartTypeToDataProcessing(chartType, timeRange, chart.logs.data));
+      responseCharts.push(
+        <Visualization
+          key={i}
+          title={chart.logs.eventName}
+          chartType={chartType}
+          data={APIChartTypeToDataProcessing(chartType, timeRange, chart.logs.data)}
+        />
+      );
+      i++;
+    });
+    
+    setCharts(responseCharts);
+  }, [chartsData, timeRange]);
+
   return (
     <MantineProvider>
-      <Shell onUsernameChange={(username: string) => {
-        console.log(`setting username to ${username}`);
-        setUsername(username);
-        Cookies.set('username', username);
-      }}>
+      <Shell
+        onUsernameChange={(username: string) => {
+          console.log(`setting username to ${username}`);
+          setUsername(username);
+          Cookies.set('username', username);
+        }}
+        
+        onTimeRangeChange={(timeRange: number) => setTimeRange(timeRange)}
+      >
         <SimpleGrid cols={{ base: 1, sm: 1, md: 2, lg: 2, xl: 3 }} spacing="xs" >
           { charts }
         </SimpleGrid>

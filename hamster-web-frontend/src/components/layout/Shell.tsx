@@ -1,4 +1,4 @@
-import { AppShell, Burger, Group, Skeleton, Text, TextInput } from '@mantine/core';
+import { AppShell, Burger, Group, Select, Skeleton, Text, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ReactNode, useState } from 'react';
 import NewChartMenu from './NewChartMenu';
@@ -6,10 +6,11 @@ import Cookies from 'js-cookie';
 
 interface ShellProps {
   onUsernameChange: (newUsername: string) => void;
+  onTimeRangeChange: (newRange: number) => void
   children?: ReactNode;
 }
 
-export function Shell({ onUsernameChange, children }: ShellProps) {
+export function Shell({ onUsernameChange, onTimeRangeChange, children }: ShellProps) {
   const [isBurgerOpen, { toggle: toggleBurger }] = useDisclosure();
   const [showDescription, setShowDescription] = useState(false);
 
@@ -27,6 +28,17 @@ export function Shell({ onUsernameChange, children }: ShellProps) {
         <Group h="100%" px="md">
           <Burger opened={isBurgerOpen} onClick={toggleBurger} hiddenFrom="sm" size="sm" />
           <Text size="xl" fw={700}>🐹 Hamster</Text>
+          <Select
+            placeholder="Select time range"
+            data={[
+              { value: '1', label: '1 day'},
+              { value: '7', label: '7 days' },
+              { value: '14', label: '14 days' },
+              { value: '28', label: '28 days' },
+            ]}
+            // Assuming you want to handle the selected value
+            onChange={(value) => onTimeRangeChange(parseInt(value ?? '7'))}
+          />
           <NewChartMenu />
           <TextInput 
             placeholder='username'

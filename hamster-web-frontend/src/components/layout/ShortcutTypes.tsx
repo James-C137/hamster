@@ -39,13 +39,23 @@ export function APIChartTypeToChartLibraryChartType(apiChartType: ChartType): IC
     }
 }
 
-export function APIChartTypeToDataProcessing(apiChartType: IChartTypes, data: any) {
-    console.log(apiChartType);
-    console.log(data);
+export function APIChartTypeToDataProcessing(apiChartType: IChartTypes, timeRange: number, data: any) {
+    // remove any data points more than timeRange days old
+    const currentDate = new Date();
+    const filteredData = data.filter((point: any[]) => {
+        const timestamp = point[0];
+        const dateObject = new Date(timestamp);
+
+        const timeDiff = Math.abs(currentDate.getTime() - dateObject.getTime());
+        const diffDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        return diffDays <= timeRange;
+    });
+
     switch (apiChartType) {
         case 'line':
             // currently x will be the date and y will be the time (local)
-            return data.map((point: any[]) => {
+            return filteredData.map((point: any[]) => {
                 const timestamp = point[0];
                 const value = point[1];
                 const dateObject = new Date(timestamp);
@@ -58,7 +68,7 @@ export function APIChartTypeToDataProcessing(apiChartType: IChartTypes, data: an
                 }
             })
         case 'scatter':
-            return data.map((point: any[]) => {
+            return filteredData.map((point: any[]) => {
                 const timestamp = point[0];
                 const dateObject = new Date(timestamp);
                 const localDate = dateObject.toLocaleDateString(); // Format: MM/DD/YYYY (varies depending on the locale)
