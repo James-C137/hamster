@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Modal, Text, Paper, TextInput } from '@mantine/core';
+import { Button, Modal, Text, Paper, TextInput, ActionIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
 import { buttonSpacing, buttonStyle, buttonTextStyle, pageIconStyle, paperStyle, subtextStyle, titleStyle } from './NewChartMenu.styles';
 import { Shortcut, shortcutTypes } from './ShortcutTypes';
+import { Plus } from 'tabler-icons-react';
+
 
 const CHARTS_API_URL = 'https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts';
 
@@ -40,8 +42,10 @@ const NewChartMenu: React.FC = () => {
   }
 
   return (
-    <div>
-      <Button onClick={open}>Make New Chart</Button>
+    <>
+      <ActionIcon variant="default" onClick={open} style={{height: '28px'}}>
+        <Plus size={16}/>
+      </ActionIcon>
       <Modal opened={opened} onClose={onModalClose} size="xl" centered>
         <div style={{ overflowX: 'hidden' }}>
           {page === 1 && selectedButton != null ? <Text style={titleStyle}>Make New Chart</Text> : <Text style={{ ...titleStyle, textAlign: 'center'}}>{selectedButton?.title}</Text>}
@@ -103,7 +107,7 @@ const NewChartMenu: React.FC = () => {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
 
