@@ -41,7 +41,7 @@ const NewChartMenu: React.FC = () => {
 
   return (
     <div>
-      <Button onClick={open}>Open Modal</Button>
+      <Button onClick={open}>Make New Chart</Button>
       <Modal opened={opened} onClose={onModalClose} size="xl" centered>
         <div style={{ overflowX: 'hidden' }}>
           {page === 1 && selectedButton != null ? <Text style={titleStyle}>Make New Chart</Text> : <Text style={{ ...titleStyle, textAlign: 'center'}}>{selectedButton?.title}</Text>}
