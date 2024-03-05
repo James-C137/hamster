@@ -1,7 +1,7 @@
 import { AppShell, Burger, Group, Modal, ActionIcon, Text, TextInput, Radio } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ReactNode, useState } from 'react';
-import { Calendar } from 'tabler-icons-react';
+import { Calendar, Tex, User } from 'tabler-icons-react';
 import NewChartMenu from './NewChartMenu';
 import Cookies from 'js-cookie';
 
@@ -17,6 +17,8 @@ export function Shell({ onUsernameChange, onTimeRangeChange, children }: ShellPr
   const [isBurgerOpen, { toggle: toggleBurger }] = useDisclosure();
   const [showDescription, setShowDescription] = useState(false);
   const [isTimeRangeModalOpen, setIsTimeRangeModalOpen] = useState(false);
+  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
+  const [username, setUsername] = useState(Cookies.get('username') || '');
   const [selectedTimeRange, setSelectedTimeRange] = useState('7'); // Default selected time range
 
   return (
@@ -59,18 +61,25 @@ export function Shell({ onUsernameChange, onTimeRangeChange, children }: ShellPr
             </Radio.Group>
           </Modal>
           <NewChartMenu />
-          <TextInput 
-            placeholder='username'
-            defaultValue={Cookies.get('username')}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                onUsernameChange(event.currentTarget.value);
-                setShowDescription(false);
-              }
+          <ActionIcon variant="default" onClick={() => setIsUsernameModalOpen(true)}>
+            <User size={16} />
+          </ActionIcon>
+          <Modal
+            opened={isUsernameModalOpen}
+            onClose={() => {
+              setIsUsernameModalOpen(false);
+              onUsernameChange(username);
             }}
-            onChange={() => setShowDescription(true)}
-          />
-          {showDescription && <Text color='#b0b0b0'>press enter to update username</Text>}
+            title="Enter your username here"
+            size="lg"
+          >
+            <TextInput 
+              placeholder='Enter your username'
+              value={username}
+              onChange={(event) => setUsername(event.currentTarget.value)}
+            />
+            <Text style={{color: '#B0B0B0', fontSize: '12px', padding: '2px 0px 0px 5px'}}>Exiting this menu will autosave your username</Text>
+          </Modal>
         </Group>
       </AppShell.Header>
       <AppShell.Main>{children}</AppShell.Main>
