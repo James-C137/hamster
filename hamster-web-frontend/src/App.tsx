@@ -26,6 +26,7 @@ function App() {
     const fetchData = async () => {
       console.log(`username: ${username}`);
       if (username == null || username.length == 0) {
+        setChartsData([]);
         return;
       }
     

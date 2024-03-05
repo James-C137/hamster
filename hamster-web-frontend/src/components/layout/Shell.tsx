@@ -20,6 +20,8 @@ export function Shell({ onUsernameChange, onTimeRangeChange, children }: ShellPr
   const [username, setUsername] = useState(Cookies.get('username') || '');
   const [selectedTimeRange, setSelectedTimeRange] = useState('7'); // Default selected time range
 
+  const canOpenNewChartMenu = username != undefined && username.length > 1;
+
   return (
     <AppShell
       header={{ height: { base: 60, md: 70, lg: 80 } }}
@@ -53,9 +55,9 @@ export function Shell({ onUsernameChange, onTimeRangeChange, children }: ShellPr
               <Radio value="28" label="28 days" />
             </Radio.Group>
           </Modal>
-          <NewChartMenu />
+          <NewChartMenu username={username} />
           <ActionIcon variant="default" onClick={() => setIsUsernameModalOpen(true)}>
-            <User size={16} />
+            <User size={16}/>
           </ActionIcon>
           <Modal
             opened={isUsernameModalOpen}

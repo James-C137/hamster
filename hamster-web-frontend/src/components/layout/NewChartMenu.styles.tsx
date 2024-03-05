@@ -4,7 +4,7 @@ export const buttonStyle = {
   width: '100%',
   marginBottom: '10px',
   backgroundColor: 'white',
-  borderColor: 'lightgray',
+  borderColor: '#B0B0B0',
   color: 'black',
   textAlign: 'left',
   padding: '10px',
@@ -16,7 +16,7 @@ export const buttonStyle = {
   borderRadius: '15px'    
 } as React.CSSProperties;
 export const paperStyle = { padding: '1rem', height: '400px' } as React.CSSProperties;
-export const subtextStyle = { color: 'lightgray', marginTop: '5px', fontSize: '13px' } as React.CSSProperties;  
+export const subtextStyle = { color: '#B0B0B0', marginTop: '5px', fontSize: '13px' } as React.CSSProperties;  
 
 export const buttonTextStyle = {
   display: 'flex',

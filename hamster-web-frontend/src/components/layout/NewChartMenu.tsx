@@ -6,20 +6,22 @@ import { buttonSpacing, buttonStyle, buttonTextStyle, pageIconStyle, paperStyle,
 import { Shortcut, shortcutTypes } from './ShortcutTypes';
 import { Plus } from 'tabler-icons-react';
 
-
 const CHARTS_API_URL = 'https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts';
 
-const NewChartMenu: React.FC = () => {
+interface NewChartMenuProps {
+  username: string | undefined
+}
+
+export function NewChartMenu({ username }: NewChartMenuProps){
   const [opened, { open, close }] = useDisclosure();
   const [selectedButton, setSelectedButton] = useState<Shortcut | null>(null);
   const [page, setPage] = useState(1);
   const [newTemplateName, setTemplateName] = useState<string>('');
-  const [username, setUsername] = useState<string>('premelon');
+  const canOpenNewChartMenu = username != undefined && username.length > 1;
 
   const onModalClose = () => {
     setPage(1);
     setSelectedButton(null);
-    setUsername('');
     setTemplateName('');
     close();
   }
@@ -43,8 +45,13 @@ const NewChartMenu: React.FC = () => {
 
   return (
     <>
-      <ActionIcon variant="default" onClick={open} style={{height: '28px'}}>
-        <Plus size={16}/>
+      <ActionIcon variant="default" onClick={() => {
+        if (canOpenNewChartMenu) {
+          open();
+        }
+      }}
+      style={{height: '28px'}}>
+        <Plus size={16} color={canOpenNewChartMenu ? '#000000' : '#B0B0B0'}/>
       </ActionIcon>
       <Modal opened={opened} onClose={onModalClose} size="xl" centered>
         <div style={{ overflowX: 'hidden' }}>
@@ -64,12 +71,6 @@ const NewChartMenu: React.FC = () => {
           ) : (
             <Paper style={{ ...paperStyle }}>
               <TextInput
-                label='Enter your username here'
-                placeholder='premelon'
-                value={username}
-                onChange={(event) => setUsername(event.currentTarget.value.replace(' ', ''))}
-              />
-              <TextInput
                 label='Name your new shortcut'
                 placeholder='Enter name here, no spaces'
                 value={newTemplateName}
@@ -78,7 +79,7 @@ const NewChartMenu: React.FC = () => {
               <Text>
                 <ol>
                   <li>Download the <a href={selectedButton?.exampleLink} target="_blank">example shortcut</a>.</li>
-                  <li>Change the username to {username.length > 0 ? <b>{username}</b> : 'your username'}.</li>
+                  <li>Change the username to <b>{username}</b>.</li>
                   <li>Change the eventName to {newTemplateName.length > 0 ? <b>{newTemplateName}.</b> : 'the name you choose above.'}</li>
                   <li>Change the data field to be anything you want.</li>
                 </ol>
@@ -87,7 +88,7 @@ const NewChartMenu: React.FC = () => {
                   variant="filled"
                   disabled={newTemplateName.length === 0 || selectedButton == null}
                   onClick={() => {
-                    if (selectedButton != null && newTemplateName.length > 0) {
+                    if (selectedButton != null && newTemplateName.length > 0 && username != undefined) {
                         createShortcut(selectedButton, newTemplateName, username);
                       }
                     }
