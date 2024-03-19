@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { chartTypesParser } from './ChartConstants';
 import DateTimeScatterPlot from './DateTimeScatterPlot';
 import LineChart from './LineChart';
+import DateTimeBarChart from './DateTimeBarChart';
 
 
 const dataPointSchema = z.object({
@@ -36,7 +37,7 @@ export function ChartFactory(props: IChartFactoryProps) {
         const dates = props.data.map(data => data.x);
         const times = props.data.map(data => data.y);
 
-        return <DateTimeScatterPlot x={dates} y={times} />
+        return <DateTimeBarChart x={dates} y={times} />
       case 'line':
         const x = props.data.map(data => data.x);
         const y = props.data.map(data => data.y);
