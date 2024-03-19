@@ -1,4 +1,4 @@
-import { MantineProvider, SimpleGrid, TextInput } from '@mantine/core';
+import { Loader, MantineProvider, SimpleGrid, TextInput } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { useEffect, useState } from 'react';
 import { ChartWithLogs } from '../../charts-service-api/src/api-schema/getChartsApiSchema';
@@ -9,15 +9,14 @@ import { Visualization } from './components/visualization/Visualization';
 import { IChartTypes } from './components/chart/ChartConstants';
 import Cookies from 'js-cookie';
 import { APIChartTypeToChartLibraryChartType, APIChartTypeToDataProcessing } from './components/layout/ShortcutTypes';
+import { Plus } from 'tabler-icons-react';
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [username, setUsername] = useState(Cookies.get('username'));
   const [timeRange, setTimeRange] = useState(7);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [visualizations, setVisualizations] = useState(['weight', 'workout', 'calories', 'creatine', 'smth else']);
-  const [axiosVisualizations, setAxiosVisualizations] = useState([]);
 
+  const [showLoadingIcon, setShowLoadingIcon] = useState(false);
   const [chartsData, setChartsData] = useState<ChartWithLogs[]>([]);
   const [charts, setCharts] = useState<any[]>([]);
 
@@ -25,14 +24,17 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       console.log(`username: ${username}`);
+      setShowLoadingIcon(true);
       if (username == null || username.length == 0) {
         setChartsData([]);
         return;
       }
     
       try {
+        
         const charts = await ChartsClient.getCharts(username);
         setChartsData(charts);
+        setShowLoadingIcon(false);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -64,6 +66,12 @@ function App() {
     setCharts(responseCharts);
   }, [chartsData, timeRange]);
 
+  const chartsGrid = (
+    <SimpleGrid cols={{ base: 1, sm: 1, md: 2, lg: 2, xl: 3 }} spacing="xs" >
+      { charts }
+    </SimpleGrid>
+  );
+
   return (
     <MantineProvider>
       <Shell
@@ -75,9 +83,25 @@ function App() {
         
         onTimeRangeChange={(timeRange: number) => setTimeRange(timeRange)}
       >
-        <SimpleGrid cols={{ base: 1, sm: 1, md: 2, lg: 2, xl: 3 }} spacing="xs" >
-          { charts }
-        </SimpleGrid>
+        {
+          showLoadingIcon ? <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%', // Adjust based on the Shell component's height or as needed
+            width: '100%', // This ensures the centering div takes up full width
+          }}>
+            <Loader color='blue' size='xl' />
+          </div> : charts.length > 0 ? chartsGrid : <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%', // Adjust based on the Shell component's height or as needed
+            width: '100%', // This ensures the centering div takes up full width
+          }}>
+            Click the plus icon to make your first chart!
+          </div>
+        }
       </Shell>
     </MantineProvider>
   )
