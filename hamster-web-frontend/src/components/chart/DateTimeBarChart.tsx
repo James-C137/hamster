@@ -55,6 +55,15 @@ const DateTimeBarChart: React.FC<DateTimeBarChartProps> = ({ x }) => {
           display: true,
           text: 'Number of Data Points',
         },
+        ticks: {
+            // Ensure ticks are integers by using the callback
+            callback: (val: number | string) => {
+                const value = Number(val);
+                if (value % 1 === 0) { // Check if the value is an integer
+                  return value.toString();
+                }
+              },
+          },
       },
     },
     plugins: {
