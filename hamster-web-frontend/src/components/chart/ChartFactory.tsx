@@ -4,6 +4,7 @@ import { chartTypesParser } from './ChartConstants';
 import DateTimeScatterPlot from './DateTimeScatterPlot';
 import LineChart from './LineChart';
 import DateTimeBarChart from './DateTimeBarChart';
+import CalendarView from './CalendarView';
 
 
 const dataPointSchema = z.object({
@@ -37,7 +38,8 @@ export function ChartFactory(props: IChartFactoryProps) {
         const dates = props.data.map(data => data.x);
         const times = props.data.map(data => data.y);
 
-        return <DateTimeBarChart x={dates} y={times} />
+        // return <DateTimeBarChart x={dates} y={times} />
+        return <CalendarView />
       case 'line':
         const x = props.data.map(data => data.x);
         const y = props.data.map(data => data.y);
