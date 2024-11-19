@@ -1,4 +1,4 @@
-import { Loader, MantineProvider, SimpleGrid, TextInput } from '@mantine/core';
+import { Loader, MantineProvider, SimpleGrid } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { useEffect, useState } from 'react';
 import { ChartWithLogs } from '../../charts-service-api/src/api-schema/getChartsApiSchema';
@@ -6,69 +6,70 @@ import './App.css';
 import { ChartsClient } from './clients/ChartsClient';
 import { Shell } from './components/layout/Shell';
 import { Visualization } from './components/visualization/Visualization';
-import { IChartTypes } from './components/chart/ChartConstants';
 import Cookies from 'js-cookie';
 import { APIChartTypeToChartLibraryChartType, APIChartTypeToDataProcessing } from './components/layout/ShortcutTypes';
-import { Plus } from 'tabler-icons-react';
 
 function App() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [username, setUsername] = useState(Cookies.get('username'));
   const [timeRange, setTimeRange] = useState(7);
-
   const [showLoadingIcon, setShowLoadingIcon] = useState(false);
   const [chartsData, setChartsData] = useState<ChartWithLogs[]>([]);
-  const [charts, setCharts] = useState<any[]>([]);
+  const [charts, setCharts] = useState<JSX.Element[]>([]);
 
-  // get data every username change
+  const handleDelete = async (index: number) => {
+    try {
+      const chartToDelete = chartsData[index];
+      // await ChartsClient.deleteChart(username!, chartToDelete.chartId);
+      const newChartsData = chartsData.filter((_, i) => i !== index);
+      setChartsData(newChartsData);
+    } catch (error) {
+      console.error("Error deleting chart:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       console.log(`username: ${username}`);
       setShowLoadingIcon(true);
-      if (username == null || username.length == 0) {
+      if (!username?.length) {
         setChartsData([]);
+        setShowLoadingIcon(false);
         return;
       }
     
       try {
-        
         const charts = await ChartsClient.getCharts(username);
         setChartsData(charts);
-        setShowLoadingIcon(false);
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        console.error("Error fetching data:", error);
+      } finally {
+        setShowLoadingIcon(false);
       }
     };
 
     fetchData();
-  }, [username]); // Empty dependency array ensures this runs once on mount
+  }, [username]);
 
-  // re-render any time data changes or date range changes
   useEffect(() => {
-    let responseCharts: JSX.Element[] = [];
-      
-    let i = 0;
-    chartsData.forEach((chart: ChartWithLogs) => {
-      // console.log(chart.logs)
+    const responseCharts = chartsData.map((chart, i) => {
       const chartType = APIChartTypeToChartLibraryChartType(chart.chartType);
-      console.log('chart.logs.data', APIChartTypeToDataProcessing(chartType, timeRange, chart.logs.data));
-      responseCharts.push(
+      return (
         <Visualization
           key={i}
           title={chart.logs.eventName}
           chartType={chartType}
           data={APIChartTypeToDataProcessing(chartType, timeRange, chart.logs.data)}
+          onDelete={() => handleDelete(i)}
         />
       );
-      i++;
     });
     
     setCharts(responseCharts);
   }, [chartsData, timeRange]);
 
   const chartsGrid = (
-    <SimpleGrid cols={{ base: 1, sm: 1, md: 2, lg: 2, xl: 3 }} spacing="xs" >
-      { charts }
+    <SimpleGrid cols={{ base: 1, sm: 1, md: 2, lg: 2, xl: 3 }} spacing="xs">
+      {charts}
     </SimpleGrid>
   );
 
@@ -80,31 +81,34 @@ function App() {
           setUsername(username);
           Cookies.set('username', username);
         }}
-        
         onTimeRangeChange={(timeRange: number) => setTimeRange(timeRange)}
       >
-        {
-          showLoadingIcon ? <div style={{
+        {showLoadingIcon ? (
+          <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100%', // Adjust based on the Shell component's height or as needed
-            width: '100%', // This ensures the centering div takes up full width
+            height: '100%',
+            width: '100%',
           }}>
-            <Loader color='blue' size='xl' />
-          </div> : charts.length > 0 ? chartsGrid : <div style={{
+            <Loader color="blue" size="xl" />
+          </div>
+        ) : charts.length > 0 ? (
+          chartsGrid
+        ) : (
+          <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100%', // Adjust based on the Shell component's height or as needed
-            width: '100%', // This ensures the centering div takes up full width
+            height: '100%',
+            width: '100%',
           }}>
             Click the plus icon to make your first chart!
           </div>
-        }
+        )}
       </Shell>
     </MantineProvider>
-  )
+  );
 }
 
 export default App;

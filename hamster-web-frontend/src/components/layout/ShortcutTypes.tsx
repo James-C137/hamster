@@ -35,7 +35,7 @@ export const shortcutTypes: Array<Shortcut> = [
   }
 ];
 
-export function APIChartTypeToChartLibraryChartType(apiChartType: ChartType): IChartTypes {
+export function APIChartTypeToChartLibraryChartType(apiChartType: ChartType | undefined): IChartTypes {
     switch (apiChartType)  {
         case 'LINE':
             return 'line'
