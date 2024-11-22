@@ -1,4 +1,4 @@
-import { AttributeValue, DynamoDBClient, PutItemCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
+import { AttributeValue, DeleteItemCommand, DynamoDBClient, PutItemCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
 import ProcessEnvUtils from '../../../../lambda-utils/src-ts/ProcessEnvUtils';
 import { ChartEntity, chartEntitySchema } from './ChartEntity';
 
@@ -71,5 +71,15 @@ export class ChartEntityDatabase {
     if (!this.client) {
       return;
     }
+
+    const command = new DeleteItemCommand({
+      TableName: this.tableName,
+      Key: {
+        ownerID: { S: ownerId },
+        chartID: { S: chartId }
+      }
+    });
+
+    await this.client.send(command);
   }
 }
