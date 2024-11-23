@@ -12,19 +12,12 @@ export type Shortcut = {
   
 
 export const shortcutTypes: Array<Shortcut> = [
-//   {
-//     title: 'Log Time',
-//     type: 'LOG_TIME',
-//     subtext: 'What time did you do something?',
-//     exampleLink: 'https://www.icloud.com/shortcuts/3c6586a381d24b4e9579ed64c494c033',
-//     chartType: 'SCATTER'
-//   },
     {
     title: 'Counter',
     type: 'COUNTER',
     subtext: 'Keep track of how many times you do something in a day.',
     exampleLink: 'https://www.icloud.com/shortcuts/3c6586a381d24b4e9579ed64c494c033',
-    chartType: 'BAR'
+    chartType: 'LINE'
   },
   {
     title: 'Quantity',

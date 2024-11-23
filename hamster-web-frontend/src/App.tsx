@@ -8,6 +8,7 @@ import { ChartsClient } from './clients/ChartsClient';
 import { Shell } from './components/layout/Shell';
 import { APIChartTypeToChartLibraryChartType, APIChartTypeToDataProcessing } from './components/layout/ShortcutTypes';
 import { Visualization } from './components/visualization/Visualization';
+import Calendar from './components/chart/MinimalCalendar';
 
 function App() {
   const [username, setUsername] = useState(Cookies.get('username'));
@@ -73,6 +74,11 @@ function App() {
     </SimpleGrid>
   );
 
+  const highlightedDates: Date[] = [
+    new Date(2024, 3, 22), // April 22, 2024
+    new Date(2024, 3, 21)  // April 15, 2024
+  ];
+
   return (
     <MantineProvider>
       <Shell
@@ -96,7 +102,8 @@ function App() {
         ) : charts.length > 0 ? (
           chartsGrid
         ) : (
-          <div style={{
+          <>
+           <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -105,6 +112,14 @@ function App() {
           }}>
             Click the plus icon to make your first chart!
           </div>
+          <Calendar 
+            date={new Date(2024, 3)} // April 2024
+            highlightedDates={highlightedDates}
+            className="my-custom-class"
+            title='Test title'
+          />
+          </>
+         
         )}
       </Shell>
     </MantineProvider>
