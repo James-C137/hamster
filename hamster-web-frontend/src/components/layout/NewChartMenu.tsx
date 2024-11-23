@@ -17,6 +17,7 @@ export function NewChartMenu({ username }: NewChartMenuProps){
   const [selectedButton, setSelectedButton] = useState<Shortcut | null>(null);
   const [page, setPage] = useState(1);
   const [newTemplateName, setTemplateName] = useState<string>('');
+  const [newQueryName, setQueryName] = useState<string>('');
   const canOpenNewChartMenu = username != undefined && username.length > 1;
 
   const onModalClose = () => {
@@ -75,6 +76,18 @@ export function NewChartMenu({ username }: NewChartMenuProps){
                 value={newTemplateName}
                 onChange={(event) => setTemplateName(event.currentTarget.value.replace(' ', ''))}
               />
+              {
+                selectedButton.type === 'CUSTOM_SQL' ? 
+                <>
+                <br />
+                <TextInput
+                  label='Enter the SQL query.'
+                  placeholder='SELECT ds, COUNT() FROM logs'
+                  value={newQueryName}
+                  onChange={(event) => setQueryName(event.currentTarget.value)}
+                />
+                </> : null
+              }
               <Text>
                 <ol>
                   <li>Download the <a href={selectedButton?.exampleLink} target="_blank">example shortcut</a>.</li>
@@ -83,9 +96,14 @@ export function NewChartMenu({ username }: NewChartMenuProps){
                   <li>Change the data field to be anything you want.</li>
                 </ol>
                 </Text>
+                {selectedButton.type === 'CUSTOM_SQL' ? 
+                  <>
+                    <Text>SQL columns must have one date column and at least one number column. They will always be plotted as line charts.</Text>
+                    <br />
+                  </> : null}
                 <Button
                   variant="filled"
-                  disabled={newTemplateName.length === 0 || selectedButton == null}
+                  disabled={newTemplateName.length === 0 || selectedButton == null  || !(selectedButton.type !== 'CUSTOM_SQL' || newQueryName.length > 0)}
                   onClick={() => {
                     if (selectedButton != null && newTemplateName.length > 0 && username != undefined) {
                         createShortcut(selectedButton, newTemplateName, username);

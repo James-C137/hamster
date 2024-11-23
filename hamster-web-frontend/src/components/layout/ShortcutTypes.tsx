@@ -32,6 +32,13 @@ export const shortcutTypes: Array<Shortcut> = [
     subtext: 'Track whether you did something today',
     exampleLink: 'https://www.icloud.com/shortcuts/d03bd22f86be4eb181a596a93a352445',
     chartType: 'CALENDAR'
+  },
+  {
+    title: 'Custom SQL',
+    type: 'CUSTOM_SQL',
+    subtext: 'Use custom SQL to plot lines. This always resolves to a line chart.',
+    exampleLink: 'https://www.icloud.com/shortcuts/d03bd22f86be4eb181a596a93a352445',
+    chartType: 'LINE'
   }
 ];
 
