@@ -74,7 +74,16 @@ const MinimalCalendar: React.FC<CalendarProps> = ({
     'July', 'August', 'September', 'October', 'November', 'December'
   ] as const;
 
-  const dayNames: readonly string[] = ['S', 'M', 'T', 'W', 'T', 'F', 'S'] as const;
+  // Using a tuple to ensure unique keys while maintaining simple mapping
+  const dayNames = [
+    ['sun-key', 'S'],
+    ['mon-key', 'M'],
+    ['tue-key', 'T'],
+    ['wed-key', 'W'],
+    ['thu-key', 'T'],
+    ['fri-key', 'F'],
+    ['sat-key', 'S']
+  ] as const;
 
   const getMonthData = (date: Date) => {
     const year = date.getFullYear();
@@ -116,10 +125,10 @@ const MinimalCalendar: React.FC<CalendarProps> = ({
       </div>
       
       <div style={baseStyles.grid}>
-        {/* Day names */}
-        {dayNames.map((day: string) => (
-          <div key={day} style={baseStyles.dayName}>
-            {day}
+        {/* Day names with unique keys */}
+        {dayNames.map(([key, label]) => (
+          <div key={key} style={baseStyles.dayName}>
+            {label}
           </div>
         ))}
         

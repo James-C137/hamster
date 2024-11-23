@@ -25,6 +25,13 @@ export const shortcutTypes: Array<Shortcut> = [
     subtext: 'Log your own quantities (e.g. how much you weigh)',
     exampleLink: 'https://www.icloud.com/shortcuts/d03bd22f86be4eb181a596a93a352445',
     chartType: 'LINE'
+  },
+  {
+    title: 'Daily Tracker',
+    type: 'DAILY_TRACKER',
+    subtext: 'Track whether you did something today',
+    exampleLink: 'https://www.icloud.com/shortcuts/d03bd22f86be4eb181a596a93a352445',
+    chartType: 'CALENDAR'
   }
 ];
 
@@ -36,6 +43,8 @@ export function APIChartTypeToChartLibraryChartType(apiChartType: ChartType | un
             return 'scatter'
         case 'BAR':
             return 'bar'
+        case 'CALENDAR':
+            return 'calendar'
         default:
             return 'empty'
     }
@@ -71,6 +80,18 @@ export function APIChartTypeToDataProcessing(apiChartType: IChartTypes, timeRang
             })
         case 'scatter':
         case 'bar':
+            return filteredData.map((point: any[]) => {
+                const timestamp = point[0];
+                const dateObject = new Date(timestamp);
+                const localDate = dateObject.toLocaleDateString(); // Format: MM/DD/YYYY (varies depending on the locale)
+                const localTime = dateObject.toLocaleTimeString(); // Format: HH:MM:SS AM/PM (varies depending on the locale)
+                
+                return {
+                    "x": localDate,
+                    "y": localTime//dateObject
+                }
+            })
+        case 'calendar':
             return filteredData.map((point: any[]) => {
                 const timestamp = point[0];
                 const dateObject = new Date(timestamp);

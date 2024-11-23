@@ -1,10 +1,10 @@
 import { Paper, Text } from '@mantine/core';
-import { z } from 'zod';
+import { number, z } from 'zod';
 import { chartTypesParser } from './ChartConstants';
 import DateTimeScatterPlot from './DateTimeScatterPlot';
 import LineChart from './LineChart';
 import DateTimeBarChart from './DateTimeBarChart';
-import CalendarView from './CalendarView';
+import MinimalCalendar from './MinimalCalendar'
 
 
 const dataPointSchema = z.object({
@@ -24,10 +24,10 @@ export type IChartFactoryProps = z.infer<typeof chartFactoryPropsParser>;
  * Creates charts with wrappers. Type of chart depends on input.
  */
 export function ChartFactory(props: IChartFactoryProps) {
-  console.log('props');
-  console.log(props);
-  console.log(props.data.map(data => data.x))
   props = chartFactoryPropsParser.parse(props);
+
+  console.log('chartFactory');
+  console.log(props);
 
 
   const getChart = (props: IChartFactoryProps) => {
@@ -44,6 +44,9 @@ export function ChartFactory(props: IChartFactoryProps) {
         const y = props.data.map(data => data.y);
 
         return <LineChart x={x} y={y} title={'test'} />
+      case 'calendar':
+        const highlightedDates = props.data.map(data => new Date(data.x))
+        return <MinimalCalendar highlightedDates={highlightedDates}/>
     }
   }
 

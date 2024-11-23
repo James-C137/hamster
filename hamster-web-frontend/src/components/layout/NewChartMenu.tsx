@@ -32,7 +32,6 @@ export function NewChartMenu({ username }: NewChartMenuProps){
   };
 
   const createShortcut = async (selectedButton: Shortcut, name: string, username: string) => {
-    console.log(name + ' ' + username);
     // add API here
     // https://qiqp6ejx2c.execute-api.us-east-1.amazonaws.com/prod/charts?ownerId=premelon
 

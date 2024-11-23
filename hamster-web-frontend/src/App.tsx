@@ -30,7 +30,6 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log(`username: ${username}`);
       setShowLoadingIcon(true);
       if (!username?.length) {
         setChartsData([]);
@@ -83,7 +82,6 @@ function App() {
     <MantineProvider>
       <Shell
         onUsernameChange={(username: string) => {
-          console.log(`setting username to ${username}`);
           setUsername(username);
           Cookies.set('username', username);
         }}
@@ -112,12 +110,6 @@ function App() {
           }}>
             Click the plus icon to make your first chart!
           </div>
-          <Calendar 
-            date={new Date(2024, 3)} // April 2024
-            highlightedDates={highlightedDates}
-            className="my-custom-class"
-            title='Test title'
-          />
           </>
          
         )}
