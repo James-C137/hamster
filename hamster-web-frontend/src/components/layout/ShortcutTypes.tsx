@@ -92,8 +92,10 @@ export function APIChartTypeToDataProcessing(apiChartType: IChartTypes, timeRang
                 }
             })
         case 'calendar':
+            console.log('calendar data processing')
+            console.log(filteredData);
             return filteredData.map((point: any[]) => {
-                const timestamp = point[0];
+                const timestamp = point[1];
                 const dateObject = new Date(timestamp);
                 const localDate = dateObject.toLocaleDateString(); // Format: MM/DD/YYYY (varies depending on the locale)
                 const localTime = dateObject.toLocaleTimeString(); // Format: HH:MM:SS AM/PM (varies depending on the locale)
