@@ -52,8 +52,10 @@ export function ChartFactory(props: IChartFactoryProps) {
 
   return (
     <Paper radius="sm" withBorder p="md">
-      <Text fw={700}>{props.title}</Text>
-      { getChart(props) }
+      <Text fw={700} style={{ textAlign: 'center', marginBottom: '1rem' }}>{props.title}</Text>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {getChart(props)}
+      </div>
     </Paper>
   );
 }
