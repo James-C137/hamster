@@ -1,13 +1,13 @@
 import { Loader, MantineProvider, SimpleGrid } from '@mantine/core';
 import '@mantine/core/styles.css';
+import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { ChartWithLogs } from '../../charts-service-api/src/api-schema/getChartsApiSchema';
 import './App.css';
 import { ChartsClient } from './clients/ChartsClient';
 import { Shell } from './components/layout/Shell';
-import { Visualization } from './components/visualization/Visualization';
-import Cookies from 'js-cookie';
 import { APIChartTypeToChartLibraryChartType, APIChartTypeToDataProcessing } from './components/layout/ShortcutTypes';
+import { Visualization } from './components/visualization/Visualization';
 
 function App() {
   const [username, setUsername] = useState(Cookies.get('username'));
@@ -19,7 +19,7 @@ function App() {
   const handleDelete = async (index: number) => {
     try {
       const chartToDelete = chartsData[index];
-      // await ChartsClient.deleteChart(username!, chartToDelete.chartId);
+      await ChartsClient.deleteChart(username!, chartToDelete.chartId);
       const newChartsData = chartsData.filter((_, i) => i !== index);
       setChartsData(newChartsData);
     } catch (error) {

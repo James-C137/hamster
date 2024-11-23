@@ -12,12 +12,14 @@ export class ChartsClient {
 
   static async getCharts(ownerId: string): Promise<ChartWithLogs[]> {
     const response = await axios.get(`${this.API_BASE_URL}/charts?ownerId=${ownerId}`);
+    console.log(`GET /charts?ownerId=${ownerId}: ${response.status}`);
     const responseBody = getChartsResponseBodySchema.parse(response.data);
     const x = responseBody.charts;
     return responseBody.charts;
   }
 
-  static async deleteChart() {
-    throw new Error('Unsupported operation');
+  static async deleteChart(ownerId: string, chartId: string): Promise<void> {
+    const response = await axios.delete(`${this.API_BASE_URL}/charts/${chartId}?ownerId=${ownerId}`);
+    console.log(`DELETE /charts/${chartId}?ownerId=${ownerId}: ${response.status}`);
   }
 }

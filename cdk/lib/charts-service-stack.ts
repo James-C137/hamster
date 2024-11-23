@@ -62,7 +62,10 @@ export class ChartsServiceStack extends Stack {
   private createAPIGateway (handler: NodejsFunction): RestApi {
     const apiGateway = new RestApi(this, 'hamster-charts-api-gateway', {
       restApiName: 'HamsterChartsAPI',
-      defaultIntegration: new LambdaIntegration(handler)
+      defaultIntegration: new LambdaIntegration(handler),
+      defaultCorsPreflightOptions: {
+        allowOrigins: ['*']
+      }
     })
 
     // Create all sub-resources
