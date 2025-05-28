@@ -40,10 +40,32 @@ export class LogsEntityDatabase {
   };
 
   public async postLog(entity: LogEntity): Promise<void> {
-    await this.client.query(
-      'INSERT INTO logs(username, analysisName, eventName, data) VALUES ' +
-      `('${entity.username}', '${entity.analysisName ?? ''}', ` +
-      `'${entity.eventName ?? ''}', '${entity.data ?? ''}')`
-    )
+    let dataToInsert: string | string[] = entity.data; // Default to the string itself
+
+    try {
+      const parsedData = JSON.parse(entity.data);
+      if (Array.isArray(parsedData)) {
+        dataToInsert = parsedData;
+      }
+    } catch (e) {
+      // Not a valid JSON string, or not an array. Treat as a single string entry.
+      // console.log('Data is not a stringified array, treating as single entry:', entity.data);
+    }
+
+    if (Array.isArray(dataToInsert)) {
+      const values = dataToInsert.map((d: any) =>
+        `('${entity.username}', '${entity.analysisName ?? ''}', '${entity.eventName ?? ''}', '${d ?? ''}')`
+      ).join(', ');
+      await this.client.query(
+        `INSERT INTO logs(username, analysisName, eventName, data) VALUES ${values}`
+      );
+    } else {
+      // dataToInsert is a string here
+      await this.client.query(
+        'INSERT INTO logs(username, analysisName, eventName, data) VALUES ' +
+        `('${entity.username}', '${entity.analysisName ?? ''}', ` +
+        `'${entity.eventName ?? ''}', '${dataToInsert ?? ''}')`
+      )
+    }
   };
 }
