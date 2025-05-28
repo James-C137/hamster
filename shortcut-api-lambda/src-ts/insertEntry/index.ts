@@ -48,6 +48,10 @@ export async function insertEntry (event: APIGatewayProxyEvent): Promise<APIGate
 
   return {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'text/plain'
+    },
     body: 'OK'
   }
 }
